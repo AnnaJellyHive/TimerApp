@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, Animated,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 
 function BreakAnimation() {
@@ -30,7 +31,13 @@ export default function TimerScreen({ route, navigation }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isBreak, setIsBreak] = useState(false);
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
+  const [started, setStarted] = useState(false);
   const phaseEnded = useRef(false);
+
+  useFocusEffect(useCallback(() => {
+    setStarted(true);
+    return () => setStarted(false);
+  }, []));
 
   const activeDuration = isBreak ? breakDurationSeconds : durationSeconds;
   const progress = activeDuration > 0 ? Math.min(1, Math.max(0, timeLeft / activeDuration)) : 0;
@@ -57,12 +64,14 @@ export default function TimerScreen({ route, navigation }: Props) {
 
   // Återställ timer när fas byter
   useEffect(() => {
+    if (!started) return;
     phaseEnded.current = false;
     setTimeLeft(isBreak ? breakDurationSeconds : durationSeconds);
-  }, [currentIndex, isBreak]);
+  }, [currentIndex, isBreak, started]);
 
   // Nedräkning
   useEffect(() => {
+    if (!started) return;
     const interval = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -74,7 +83,7 @@ export default function TimerScreen({ route, navigation }: Props) {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentIndex, isBreak]);
+  }, [currentIndex, isBreak, started]);
 
   // Hantera fasövergång utanför setState
   useEffect(() => {
