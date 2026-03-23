@@ -7,7 +7,12 @@ const KEY = 'streak_store';
 
 export async function getAll(): Promise<CompletedTask[]> {
   const json = await AsyncStorage.getItem(KEY);
-  return json ? JSON.parse(json) : [];
+  if (!json) return [];
+  try {
+    return JSON.parse(json);
+  } catch {
+    return [];
+  }
 }
 
 export async function save(task: Omit<CompletedTask, 'id' | 'completedAt'>): Promise<void> {

@@ -33,7 +33,7 @@ export default function TimerScreen({ route, navigation }: Props) {
   const phaseEnded = useRef(false);
 
   const activeDuration = isBreak ? breakDurationSeconds : durationSeconds;
-  const progress = timeLeft / activeDuration;
+  const progress = activeDuration > 0 ? Math.min(1, Math.max(0, timeLeft / activeDuration)) : 0;
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseRef = useRef<Animated.CompositeAnimation | null>(null);

@@ -19,7 +19,9 @@ export default function ContinueScreen({ route, navigation }: Props) {
     `${seconds} sekunder`;
 
   async function saveAndGoTo(dest: 'timer' | 'history') {
-    await StreakStore.save({ taskName, subtasks, durationSeconds, breakDurationSeconds });
+    try {
+      await StreakStore.save({ taskName, subtasks, durationSeconds, breakDurationSeconds });
+    } catch { /* ignorera om lagring misslyckas */ }
     if (dest === 'timer') {
       navigation.replace('Timer', { taskName, subtasks, durationSeconds, breakDurationSeconds });
     } else {

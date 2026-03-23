@@ -7,7 +7,12 @@ const KEY = 'template_store';
 
 export async function getAll(): Promise<TaskTemplate[]> {
   const json = await AsyncStorage.getItem(KEY);
-  return json ? JSON.parse(json) : [];
+  if (!json) return [];
+  try {
+    return JSON.parse(json);
+  } catch {
+    return [];
+  }
 }
 
 export async function save(template: Omit<TaskTemplate, 'id'>): Promise<void> {
