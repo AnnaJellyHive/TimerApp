@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import * as StreakStore from '../storage/streakStore';
@@ -31,14 +31,15 @@ export default function ContinueScreen({ route, navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text testID="continueDoneLabel" style={styles.doneLabel}>
+      <Text testID="continueDoneLabel" accessibilityLabel={Platform.OS === 'android' ? 'continueDoneLabel' : undefined} style={styles.doneLabel}>
         🎉 {timeLabel} klara!
       </Text>
-      <Text testID="continueTaskName" style={styles.taskName}>{taskName}</Text>
+      <Text testID="continueTaskName" accessibilityLabel={Platform.OS === 'android' ? 'continueTaskName' : undefined} style={styles.taskName}>{taskName}</Text>
       <Text style={styles.question}>Vill du köra en gång till?</Text>
 
       <TouchableOpacity
         testID="continueYesButton"
+        accessibilityLabel="continueYesButton"
         style={styles.primaryBtn}
         onPress={() => saveAndGoTo('timer')}>
         <Text style={styles.primaryBtnText}>Ja, kör igen!</Text>
@@ -46,6 +47,7 @@ export default function ContinueScreen({ route, navigation }: Props) {
 
       <TouchableOpacity
         testID="continueNoButton"
+        accessibilityLabel="continueNoButton"
         style={styles.secondaryBtn}
         onPress={() => saveAndGoTo('history')}>
         <Text style={styles.secondaryBtnText}>Nej, vi är klara</Text>

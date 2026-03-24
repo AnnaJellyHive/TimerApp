@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
-  StyleSheet, Alert, ActivityIndicator,
+  StyleSheet, Alert, ActivityIndicator, Platform,
 } from 'react-native';
 import SwipeableRow from '../components/SwipeableRow';
 import { useFocusEffect } from '@react-navigation/native';
@@ -70,7 +70,7 @@ export default function HistoryScreen({ navigation }: Props) {
               containerStyle={{ marginBottom: 10 }}>
               <TouchableOpacity onPress={() => reuseTask(item)}>
                 <View testID={`historyItem_${item.id}`} style={styles.card}>
-                  <Text testID="taskItemTitle" accessible={true} style={styles.cardTitle}>
+                  <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
                     {item.taskName}
                   </Text>
                   <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
