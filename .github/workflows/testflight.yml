@@ -41,6 +41,8 @@ jobs:
           CERTIFICATE_PASSWORD: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSWORD }}
         run: |
           echo "$CERTIFICATE_P12" | base64 --decode > distribution.p12
+          echo "Decoded file size: $(wc -c < distribution.p12) bytes"
+          file distribution.p12
           security create-keychain -p "" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "" build.keychain
