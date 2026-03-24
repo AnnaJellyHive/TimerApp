@@ -69,8 +69,8 @@ export default function HistoryScreen({ navigation }: Props) {
               onDelete={() => deleteTask(item)}
               containerStyle={{ marginBottom: 10 }}>
               <TouchableOpacity onPress={() => reuseTask(item)}>
-                <View accessibilityLabel={`historyItem_${item.id}`} style={styles.card}>
-                  <Text testID="taskItemTitle" style={styles.cardTitle}>
+                <View testID={`historyItem_${item.id}`} style={styles.card}>
+                  <Text testID="taskItemTitle" accessible={true} style={styles.cardTitle}>
                     {item.taskName}
                   </Text>
                   <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>

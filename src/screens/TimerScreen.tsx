@@ -114,13 +114,13 @@ export default function TimerScreen({ route, navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text testID="timerModeLabel" style={styles.modeLabel}>{modeLabel}</Text>
+      <Text testID="timerModeLabel" accessible={true} style={styles.modeLabel}>{modeLabel}</Text>
 
-      <Text testID="timerTaskName" style={styles.taskName} numberOfLines={2}>
+      <Text testID="timerTaskName" accessible={true} style={styles.taskName} numberOfLines={2}>
         {isBreak && nextSubtask ? `Nästa: ${nextSubtask}` : subtasks[currentIndex]}
       </Text>
 
-      <Text testID="timerProgress" style={styles.progress}>
+      <Text testID="timerProgress" accessible={true} style={styles.progress}>
         {isBreak ? 'Paus' : `${currentIndex + 1} av ${subtasks.length}`}
       </Text>
 
