@@ -133,7 +133,7 @@ export default function TimerScreen({ route, navigation }: Props) {
       )}
       {isBreak && <BreakAnimation />}
 
-      <Text accessibilityLabel="timerDisplay" style={styles.timerDisplay}>
+      <Text testID="timerDisplay" style={styles.timerDisplay}>
         {formatTime(timeLeft)}
       </Text>
 

@@ -55,7 +55,7 @@ export default function HistoryScreen({ navigation }: Props) {
       {loading ? (
         <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 48 }} />
       ) : tasks.length === 0 ? (
-        <Text accessibilityLabel="emptyHistoryText" style={styles.empty}>
+        <Text testID="emptyHistoryText" style={styles.empty}>
           Inga avklarade uppgifter de senaste 3 dagarna
         </Text>
       ) : (
@@ -70,10 +70,10 @@ export default function HistoryScreen({ navigation }: Props) {
               containerStyle={{ marginBottom: 10 }}>
               <TouchableOpacity onPress={() => reuseTask(item)}>
                 <View accessibilityLabel={`historyItem_${item.id}`} style={styles.card}>
-                  <Text accessibilityLabel="taskItemTitle" style={styles.cardTitle}>
+                  <Text testID="taskItemTitle" style={styles.cardTitle}>
                     {item.taskName}
                   </Text>
-                  <Text accessibilityLabel="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
+                  <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
                   <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
                 </View>
               </TouchableOpacity>

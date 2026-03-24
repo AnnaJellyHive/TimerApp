@@ -122,7 +122,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         autoCorrect={false}
       />
       {taskName.length >= MAX_LENGTH && (
-        <Text accessibilityLabel="taskInputError" style={styles.error}>
+        <Text testID="taskInputError" style={styles.error}>
           Max {MAX_LENGTH} tecken
         </Text>
       )}
@@ -146,7 +146,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         </TouchableOpacity>
       </View>
       {subtaskInput.length >= MAX_LENGTH && (
-        <Text accessibilityLabel="subtaskInputError" style={styles.error}>
+        <Text testID="subtaskInputError" style={styles.error}>
           Max {MAX_LENGTH} tecken
         </Text>
       )}
@@ -219,7 +219,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
                   onDelete={() => deleteTemplate(item.id)}>
                 <View style={styles.templateRow}>
                   <TouchableOpacity style={{ flex: 1 }} onPress={() => applyTemplate(item)}>
-                    <Text accessibilityLabel="templateItemName" style={styles.templateName}>{item.taskName}</Text>
+                    <Text testID="templateItemName" style={styles.templateName}>{item.taskName}</Text>
                   </TouchableOpacity>
                 </View>
               </SwipeableRow>

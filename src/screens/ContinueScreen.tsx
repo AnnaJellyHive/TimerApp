@@ -31,21 +31,21 @@ export default function ContinueScreen({ route, navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text accessibilityLabel="continueDoneLabel" style={styles.doneLabel}>
+      <Text testID="continueDoneLabel" style={styles.doneLabel}>
         🎉 {timeLabel} klara!
       </Text>
-      <Text accessibilityLabel="continueTaskName" style={styles.taskName}>{taskName}</Text>
+      <Text testID="continueTaskName" style={styles.taskName}>{taskName}</Text>
       <Text style={styles.question}>Vill du köra en gång till?</Text>
 
       <TouchableOpacity
-        accessibilityLabel="continueYesButton"
+        testID="continueYesButton"
         style={styles.primaryBtn}
         onPress={() => saveAndGoTo('timer')}>
         <Text style={styles.primaryBtnText}>Ja, kör igen!</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        accessibilityLabel="continueNoButton"
+        testID="continueNoButton"
         style={styles.secondaryBtn}
         onPress={() => saveAndGoTo('history')}>
         <Text style={styles.secondaryBtnText}>Nej, vi är klara</Text>
