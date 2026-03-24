@@ -119,6 +119,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         value={taskName}
         onChangeText={setTaskName}
         maxLength={60}
+        autoCorrect={false}
       />
       {taskName.length >= MAX_LENGTH && (
         <Text accessibilityLabel="taskInputError" style={styles.error}>
@@ -138,6 +139,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
           onSubmitEditing={addSubtask}
           returnKeyType="done"
           maxLength={60}
+          autoCorrect={false}
         />
         <TouchableOpacity accessibilityLabel="addSubtaskButton" style={styles.addBtn} onPress={addSubtask}>
           <Text style={styles.addBtnText}>+</Text>
