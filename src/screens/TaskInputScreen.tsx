@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   StyleSheet, Alert, Modal, FlatList, Image, KeyboardAvoidingView, Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeableRow from '../components/SwipeableRow';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, TaskTemplate } from '../types';
@@ -103,6 +104,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
   }
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
 
@@ -123,7 +125,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         autoCorrect={false}
       />
       {taskName.length >= MAX_LENGTH && (
-        <Text accessibilityLabel="taskInputError" style={styles.error}>
+        <Text testID="taskInputError" style={styles.error}>
           Max {MAX_LENGTH} tecken
         </Text>
       )}
@@ -147,7 +149,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         </TouchableOpacity>
       </View>
       {subtaskInput.length >= MAX_LENGTH && (
-        <Text accessibilityLabel="subtaskInputError" style={styles.error}>
+        <Text testID="subtaskInputError" style={styles.error}>
           Max {MAX_LENGTH} tecken
         </Text>
       )}
@@ -220,7 +222,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
                   onDelete={() => deleteTemplate(item.id)}>
                 <View style={styles.templateRow}>
                   <TouchableOpacity style={{ flex: 1 }} onPress={() => applyTemplate(item)}>
-                    <Text accessibilityLabel="templateItemName" style={styles.templateName}>{item.taskName}</Text>
+                    <Text testID="templateItemName" style={styles.templateName}>{item.taskName}</Text>
                   </TouchableOpacity>
                 </View>
               </SwipeableRow>
@@ -237,6 +239,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </Modal>
     </ScrollView>
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
