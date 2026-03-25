@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import * as StreakStore from '../storage/streakStore';
@@ -30,7 +31,7 @@ export default function ContinueScreen({ route, navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text testID="continueDoneLabel" accessibilityLabel={Platform.OS === 'android' ? 'continueDoneLabel' : undefined} style={styles.doneLabel}>
         🎉 {timeLabel} klara!
       </Text>
@@ -52,7 +53,7 @@ export default function ContinueScreen({ route, navigation }: Props) {
         onPress={() => saveAndGoTo('history')}>
         <Text style={styles.secondaryBtnText}>Nej, vi är klara</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
