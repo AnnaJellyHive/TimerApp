@@ -57,6 +57,8 @@ jobs:
           echo "$PROVISIONING_PROFILE" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/distribution.mobileprovision
 
       - name: Build and Archive
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           xcodebuild \
             -workspace ios/TimerApp.xcworkspace \
@@ -67,7 +69,8 @@ jobs:
             archive \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            PROVISIONING_PROFILE_SPECIFIER="Zonat AppStore"
+            PROVISIONING_PROFILE_SPECIFIER="Zonat AppStore" \
+            DEVELOPMENT_TEAM="$TEAM_ID"
 
       - name: Export IPA
         run: |
