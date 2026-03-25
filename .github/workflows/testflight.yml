@@ -103,7 +103,9 @@ jobs:
           API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
-          printf '-----BEGIN PRIVATE KEY-----\n%s\n-----END PRIVATE KEY-----\n' "$API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8
+          echo "-----BEGIN PRIVATE KEY-----" > ~/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8
+          echo "$API_KEY" >> ~/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8
+          echo "-----END PRIVATE KEY-----" >> ~/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8
           xcrun altool --upload-app \
             --type ios \
             --file ios/build/export/TimerApp.ipa \
