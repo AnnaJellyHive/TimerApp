@@ -102,10 +102,10 @@ jobs:
           API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
         run: |
-          echo "$API_KEY" > /tmp/api_key.p8
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8
           xcrun altool --upload-app \
             --type ios \
             --file ios/build/export/TimerApp.ipa \
             --apiKey "$API_KEY_ID" \
-            --apiIssuer "$API_ISSUER_ID" \
-            --apiKeyPath /tmp/api_key.p8
+            --apiIssuer "$API_ISSUER_ID"
