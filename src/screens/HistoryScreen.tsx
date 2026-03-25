@@ -3,6 +3,7 @@ import {
   View, Text, FlatList, TouchableOpacity,
   StyleSheet, Alert, ActivityIndicator, Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeableRow from '../components/SwipeableRow';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -49,7 +50,7 @@ export default function HistoryScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Historik</Text>
 
       {loading ? (
@@ -88,7 +89,7 @@ export default function HistoryScreen({ navigation }: Props) {
         onPress={() => navigation.navigate('TaskInput')}>
         <Text style={styles.primaryBtnText}>Ny uppgift</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
