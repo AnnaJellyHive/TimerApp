@@ -26,7 +26,9 @@ jobs:
         id: pods-cache
         uses: actions/cache@v4
         with:
-          path: ios/Pods
+          path: |
+            ios/Pods
+            ios/TimerApp.xcworkspace
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
 
       - name: Install CocoaPods
