@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  StyleSheet, Alert, Modal, FlatList, Image,
+  StyleSheet, Alert, Modal, FlatList, Image, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import SwipeableRow from '../components/SwipeableRow';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -103,6 +103,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
   }
 
   return (
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
 
       <View style={styles.appTitleRow}>
@@ -235,6 +236,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         </View>
       </Modal>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
