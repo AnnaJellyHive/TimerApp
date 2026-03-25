@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, Animated, Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
@@ -113,7 +114,7 @@ export default function TimerScreen({ route, navigation }: Props) {
     ? subtasks[currentIndex + 1] : null;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text testID="timerModeLabel" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'timerModeLabel' : undefined} style={styles.modeLabel}>{modeLabel}</Text>
 
       <Text testID="timerTaskName" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'timerTaskName' : undefined} style={styles.taskName} numberOfLines={2}>
@@ -148,7 +149,7 @@ export default function TimerScreen({ route, navigation }: Props) {
         onPress={() => navigation.navigate('TaskInput')}>
         <Text style={styles.cancelBtnText}>Avbryt</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
