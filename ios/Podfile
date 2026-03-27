@@ -30,5 +30,11 @@ target 'TimerApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    Dir.glob(File.join(installer.sandbox.root, 'Target Support Files', 'Pods-TimerApp', '*.xcconfig')).each do |path|
+      content = File.read(path)
+      unless content.include?('AVFoundation')
+        File.open(path, 'a') { |f| f.write("\nOTHER_LDFLAGS = $(inherited) -framework \"AVFoundation\"\n") }
+      end
+    end
   end
 end
