@@ -119,14 +119,8 @@ export default function TimerScreen({ route, navigation }: Props) {
         soundEnd.current?.stop(() => soundEnd.current?.play());
         setIsBreak(true);
       } else {
-        const goToContinue = () =>
-          navigation.replace('Continue', { taskName, subtasks, durationSeconds, breakDurationSeconds, category });
-        const s = soundEnd.current;
-        if (s) {
-          s.stop(() => s.play(() => goToContinue()));
-        } else {
-          goToContinue();
-        }
+        soundEnd.current?.stop(() => soundEnd.current?.play());
+        navigation.replace('Continue', { taskName, subtasks, durationSeconds, breakDurationSeconds, category });
       }
     } else {
       setCurrentIndex(prev => prev + 1);
