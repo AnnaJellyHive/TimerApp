@@ -4,6 +4,7 @@ export interface TaskTemplate {
   subtasks: string[];
   durationSeconds: number;
   breakDurationSeconds: number;
+  category?: string;
 }
 
 export interface CompletedTask {
@@ -12,6 +13,7 @@ export interface CompletedTask {
   subtasks: string[];
   durationSeconds: number;
   breakDurationSeconds: number;
+  category?: string;
   completedAt: number; // timestamp ms
 }
 
@@ -22,12 +24,14 @@ export type RootStackParamList = {
     subtasks: string[];
     durationSeconds: number;
     breakDurationSeconds: number;
+    category?: string;
   };
   Continue: {
     taskName: string;
     subtasks: string[];
     durationSeconds: number;
     breakDurationSeconds: number;
+    category?: string;
   };
   History: undefined;
 };

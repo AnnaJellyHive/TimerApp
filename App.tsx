@@ -1,6 +1,6 @@
 import 'react-native-get-random-values';
 import React from 'react';
-import { StatusBar, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StatusBar, View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -51,7 +51,11 @@ export default function App() {
   return (
     <ErrorBoundary>
       <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar
+          barStyle="dark-content"
+          translucent={Platform.OS === 'android'}
+          backgroundColor={Platform.OS === 'android' ? 'transparent' : undefined}
+        />
         <NavigationContainer>
           <Stack.Navigator initialRouteName="TaskInput" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="TaskInput" component={TaskInputScreen} />

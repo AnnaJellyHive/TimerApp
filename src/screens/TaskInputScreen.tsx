@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  StyleSheet, Alert, Modal, FlatList, Image, KeyboardAvoidingView, Platform,
+  StyleSheet, Alert, Modal, FlatList, Image, KeyboardAvoidingView, Platform, Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeableRow from '../components/SwipeableRow';
@@ -13,6 +13,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'TaskInput'>;
 
 const MAX_LENGTH = 50;
 const DEFAULT_DURATION = 120;
+const CATEGORIES = ['Övrigt', 'Plugg', 'Träning', 'Hem', 'Socialt', 'Mental hälsa'];
 
 export default function TaskInputScreen({ route, navigation }: Props) {
   const prefill = route.params?.prefill;
@@ -22,6 +23,8 @@ export default function TaskInputScreen({ route, navigation }: Props) {
   const [subtasks, setSubtasks] = useState<string[]>(prefill?.subtasks ?? []);
   const [duration, setDuration] = useState(String(prefill?.durationSeconds ?? DEFAULT_DURATION));
   const [breakDuration, setBreakDuration] = useState(String(prefill?.breakDurationSeconds ?? DEFAULT_DURATION));
+  const [category, setCategory] = useState(prefill?.category ?? 'Övrigt');
+  const [showCategory, setShowCategory] = useState(false);
   const [templates, setTemplates] = useState<TaskTemplate[]>([]);
   const [showTemplates, setShowTemplates] = useState(false);
 
@@ -45,6 +48,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
     setSubtaskInput('');
     setDuration(String(DEFAULT_DURATION));
     setBreakDuration(String(DEFAULT_DURATION));
+    setCategory('Övrigt');
   }
 
   function startTimer() {
@@ -55,6 +59,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       subtasks: subtasks.map(s => s.slice(0, MAX_LENGTH)),
       durationSeconds: Math.max(1, parseInt(duration) || DEFAULT_DURATION),
       breakDurationSeconds: Math.max(1, parseInt(breakDuration) || DEFAULT_DURATION),
+      category,
     });
   }
 
@@ -71,6 +76,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       subtasks: subtasks.map(s => s.slice(0, MAX_LENGTH)),
       durationSeconds: Math.max(1, parseInt(duration) || DEFAULT_DURATION),
       breakDurationSeconds: Math.max(1, parseInt(breakDuration) || DEFAULT_DURATION),
+      category,
     });
     Alert.alert('Uppgift sparad!');
   }
@@ -87,6 +93,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
     setSubtasks(t.subtasks);
     setDuration(String(t.durationSeconds));
     setBreakDuration(String(t.breakDurationSeconds));
+    setCategory(t.category ?? 'Övrigt');
     setShowTemplates(false);
   }
 
@@ -165,24 +172,39 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         ))}
       </View>
 
-      {/* Tider */}
-      <Text style={styles.label}>Arbetstid (sekunder)</Text>
-      <TextInput
-        accessibilityLabel="durationInput"
-        style={styles.input}
-        keyboardType="default"
-        value={duration}
-        onChangeText={setDuration}
-      />
+      {/* Kategori */}
+      <Text style={styles.label}>Kategori</Text>
+      <TouchableOpacity
+        accessibilityLabel="categoryButton"
+        style={styles.categoryBtn}
+        onPress={() => setShowCategory(true)}>
+        <Text style={styles.categoryBtnText}>{category}</Text>
+        <Text style={styles.categoryChevron}>▾</Text>
+      </TouchableOpacity>
 
-      <Text style={styles.label}>Paus-tid (sekunder)</Text>
-      <TextInput
-        accessibilityLabel="breakDurationInput"
-        style={styles.input}
-        keyboardType="default"
-        value={breakDuration}
-        onChangeText={setBreakDuration}
-      />
+      {/* Tider */}
+      <View style={styles.timerRow}>
+        <View style={styles.timerField}>
+          <Text style={styles.label}>Fokustid (sek)</Text>
+          <TextInput
+            accessibilityLabel="durationInput"
+            style={styles.input}
+            keyboardType="default"
+            value={duration}
+            onChangeText={setDuration}
+          />
+        </View>
+        <View style={styles.timerField}>
+          <Text style={styles.label}>Paus-tid (sek)</Text>
+          <TextInput
+            accessibilityLabel="breakDurationInput"
+            style={styles.input}
+            keyboardType="default"
+            value={breakDuration}
+            onChangeText={setBreakDuration}
+          />
+        </View>
+      </View>
 
       {/* Knappar */}
       <TouchableOpacity accessibilityLabel="startButton" style={styles.primaryBtn} onPress={startTimer}>
@@ -207,6 +229,25 @@ export default function TaskInputScreen({ route, navigation }: Props) {
           <Text style={styles.clearBtnText}>Rensa</Text>
         </TouchableOpacity>
       )}
+
+      {/* Kategoridialog */}
+      <Modal visible={showCategory} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Välj kategori</Text>
+            {CATEGORIES.map(cat => (
+              <TouchableOpacity
+                key={cat}
+                style={styles.categoryRow}
+                onPress={() => { setCategory(cat); setShowCategory(false); }}>
+                <Text style={[styles.categoryRowText, cat === category && styles.categoryRowSelected]}>
+                  {cat === category ? '● ' : '○ '}{cat}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
 
       {/* Malldialogruta */}
       <Modal visible={showTemplates} transparent animationType="fade">
@@ -280,6 +321,8 @@ const styles = StyleSheet.create({
     padding: 10, alignItems: 'center', marginTop: 8, flex: 1,
   },
   secondaryBtnText: { color: GREEN, fontSize: 14 },
+  timerRow: { flexDirection: 'row', gap: 12 },
+  timerField: { flex: 1 },
   clearBtn: { alignItems: 'center', marginTop: 16 },
   clearBtnText: { color: '#888', fontSize: 14 },
   modalOverlay: {
@@ -288,7 +331,7 @@ const styles = StyleSheet.create({
   },
   modalBox: {
     backgroundColor: '#fff', borderRadius: 12,
-    padding: 20, maxHeight: '70%',
+    padding: 20, maxHeight: Dimensions.get('window').height * 0.7,
   },
   modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
   templateRow: {
@@ -296,6 +339,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee',
   },
   templateName: { fontSize: 16 },
+  categoryBtn: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
+    padding: 10, backgroundColor: '#fff', marginBottom: 8,
+  },
+  categoryBtnText: { fontSize: 16, color: '#333' },
+  categoryChevron: { fontSize: 16, color: '#888' },
+  categoryRow: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  categoryRowText: { fontSize: 16, color: '#333' },
+  categoryRowSelected: { color: '#4CAF50', fontWeight: '600' },
   templateDeleteAction: {
     backgroundColor: '#e53935', justifyContent: 'center',
     alignItems: 'center', width: 80,

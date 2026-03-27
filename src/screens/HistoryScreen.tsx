@@ -76,6 +76,11 @@ export default function HistoryScreen({ navigation }: Props) {
                   </Text>
                   <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
                   <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
+                  {item.category && item.category !== 'Övrigt' && (
+                    <View style={styles.categoryChip}>
+                      <Text style={styles.categoryChipText}>{item.category}</Text>
+                    </View>
+                  )}
                 </View>
               </TouchableOpacity>
             </SwipeableRow>
@@ -105,6 +110,11 @@ const styles = StyleSheet.create({
   },
   cardTitle: { fontSize: 16, fontWeight: '600', marginBottom: 4 },
   cardSub: { fontSize: 13, color: '#666' },
+  categoryChip: {
+    alignSelf: 'flex-start', backgroundColor: '#e8f5e9',
+    borderRadius: 12, paddingHorizontal: 8, paddingVertical: 2, marginTop: 4,
+  },
+  categoryChipText: { fontSize: 11, color: '#388E3C' },
   primaryBtn: {
     backgroundColor: GREEN, borderRadius: 8,
     padding: 14, alignItems: 'center', marginTop: 16,

@@ -8,7 +8,7 @@ import * as StreakStore from '../storage/streakStore';
 type Props = NativeStackScreenProps<RootStackParamList, 'Continue'>;
 
 export default function ContinueScreen({ route, navigation }: Props) {
-  const { taskName, subtasks, durationSeconds, breakDurationSeconds } = route.params;
+  const { taskName, subtasks, durationSeconds, breakDurationSeconds, category } = route.params;
 
   const totalSeconds =
     subtasks.length * durationSeconds + (subtasks.length - 1) * breakDurationSeconds;
@@ -21,10 +21,10 @@ export default function ContinueScreen({ route, navigation }: Props) {
 
   async function saveAndGoTo(dest: 'timer' | 'history') {
     try {
-      await StreakStore.save({ taskName, subtasks, durationSeconds, breakDurationSeconds });
+      await StreakStore.save({ taskName, subtasks, durationSeconds, breakDurationSeconds, category });
     } catch { /* ignorera om lagring misslyckas */ }
     if (dest === 'timer') {
-      navigation.replace('Timer', { taskName, subtasks, durationSeconds, breakDurationSeconds });
+      navigation.replace('Timer', { taskName, subtasks, durationSeconds, breakDurationSeconds, category });
     } else {
       navigation.navigate('History');
     }

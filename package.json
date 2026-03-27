@@ -21,6 +21,7 @@
     "react-native-get-random-values": "^2.0.0",
     "react-native-safe-area-context": "^5.7.0",
     "react-native-screens": "^4.24.0",
+    "react-native-sound": "^0.13.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

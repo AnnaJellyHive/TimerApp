@@ -7,6 +7,9 @@ import LottieView from 'lottie-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
+import Sound from 'react-native-sound';
+
+Sound.setCategory('Playback');
 
 function BreakAnimation() {
   return (
@@ -27,13 +30,24 @@ function BreakAnimation() {
 type Props = NativeStackScreenProps<RootStackParamList, 'Timer'>;
 
 export default function TimerScreen({ route, navigation }: Props) {
-  const { taskName, subtasks, durationSeconds, breakDurationSeconds } = route.params;
+  const { taskName, subtasks, durationSeconds, breakDurationSeconds, category } = route.params;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isBreak, setIsBreak] = useState(false);
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
   const [started, setStarted] = useState(false);
   const phaseEnded = useRef(false);
+  const soundStart = useRef<Sound | null>(null);
+  const soundEnd = useRef<Sound | null>(null);
+
+  useEffect(() => {
+    soundStart.current = new Sound('sound_start.mp3', Sound.MAIN_BUNDLE, () => {});
+    soundEnd.current   = new Sound('sound_end.mp3',   Sound.MAIN_BUNDLE, () => {});
+    return () => {
+      soundStart.current?.release();
+      soundEnd.current?.release();
+    };
+  }, []);
 
   useFocusEffect(useCallback(() => {
     setStarted(true);
@@ -46,7 +60,16 @@ export default function TimerScreen({ route, navigation }: Props) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseRef = useRef<Animated.CompositeAnimation | null>(null);
 
-  // Pulsanimation för JOBBA!
+  // Ljud vid start av FOKUS-period (liten fördröjning säkerställer att ljudet är laddat)
+  useEffect(() => {
+    if (!started || isBreak) return;
+    const t = setTimeout(() => {
+      soundStart.current?.stop(() => soundStart.current?.play());
+    }, 200);
+    return () => clearTimeout(t);
+  }, [currentIndex, isBreak, started]);
+
+  // Pulsanimation för FOKUS!
   useEffect(() => {
     if (!isBreak) {
       pulseRef.current = Animated.loop(
@@ -93,9 +116,17 @@ export default function TimerScreen({ route, navigation }: Props) {
 
     if (!isBreak) {
       if (currentIndex + 1 < subtasks.length) {
+        soundEnd.current?.stop(() => soundEnd.current?.play());
         setIsBreak(true);
       } else {
-        navigation.replace('Continue', { taskName, subtasks, durationSeconds, breakDurationSeconds });
+        const goToContinue = () =>
+          navigation.replace('Continue', { taskName, subtasks, durationSeconds, breakDurationSeconds, category });
+        const s = soundEnd.current;
+        if (s) {
+          s.stop(() => s.play(() => goToContinue()));
+        } else {
+          goToContinue();
+        }
       }
     } else {
       setCurrentIndex(prev => prev + 1);
@@ -109,7 +140,7 @@ export default function TimerScreen({ route, navigation }: Props) {
     return `${m}:${s.toString().padStart(2, '0')}`;
   }
 
-  const modeLabel = isBreak ? 'VILA!' : 'JOBBA!';
+  const modeLabel = isBreak ? 'PAUSA!' : 'FOKUS!';
   const nextSubtask = isBreak && currentIndex + 1 < subtasks.length
     ? subtasks[currentIndex + 1] : null;
 
@@ -139,8 +170,8 @@ export default function TimerScreen({ route, navigation }: Props) {
       </Text>
 
       <View accessibilityLabel="timerProgressBar" style={styles.progressBarBg}>
-        <View style={[styles.progressBarFill, { flex: progress }]} />
-        <View style={{ flex: 1 - progress }} />
+        <View style={[styles.progressBarFill, { flex: Math.max(0.001, progress) }]} />
+        <View style={{ flex: Math.max(0.001, 1 - progress) }} />
       </View>
 
       <TouchableOpacity
