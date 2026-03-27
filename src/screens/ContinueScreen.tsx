@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -32,8 +32,9 @@ export default function ContinueScreen({ route, navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image source={require('../../assets/konfetti.png')} style={styles.konfetti} resizeMode="contain" />
       <Text testID="continueDoneLabel" accessibilityLabel={Platform.OS === 'android' ? 'continueDoneLabel' : undefined} style={styles.doneLabel}>
-        🎉 {timeLabel} klara!
+        {timeLabel} klara!
       </Text>
       <Text testID="continueTaskName" accessibilityLabel={Platform.OS === 'android' ? 'continueTaskName' : undefined} style={styles.taskName}>{taskName}</Text>
       <Text style={styles.question}>Vill du köra en gång till?</Text>
@@ -61,6 +62,7 @@ const GREEN = '#4CAF50';
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32 },
+  konfetti: { width: 180, height: 180, marginBottom: 8 },
   doneLabel: { fontSize: 28, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
   taskName: { fontSize: 18, color: '#555', marginBottom: 32, textAlign: 'center' },
   question: { fontSize: 16, marginBottom: 24 },
