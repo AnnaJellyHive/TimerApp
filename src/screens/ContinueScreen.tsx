@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -19,10 +19,11 @@ export default function ContinueScreen({ route, navigation }: Props) {
     minutes > 0 ? `${minutes} min ${seconds} sek` :
     `${seconds} sekunder`;
 
+  useEffect(() => {
+    StreakStore.save({ taskName, subtasks, durationSeconds, breakDurationSeconds, category }).catch(() => {});
+  }, []);
+
   async function saveAndGoTo(dest: 'timer' | 'history') {
-    try {
-      await StreakStore.save({ taskName, subtasks, durationSeconds, breakDurationSeconds, category });
-    } catch { /* ignorera om lagring misslyckas */ }
     if (dest === 'timer') {
       navigation.replace('Timer', { taskName, subtasks, durationSeconds, breakDurationSeconds, category });
     } else {

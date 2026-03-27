@@ -14,6 +14,14 @@ type Props = NativeStackScreenProps<RootStackParamList, 'TaskInput'>;
 const MAX_LENGTH = 50;
 const DEFAULT_DURATION = 120;
 const CATEGORIES = ['Övrigt', 'Plugg', 'Träning', 'Hem', 'Socialt', 'Mental hälsa'];
+const CATEGORY_ICONS: Record<string, string> = {
+  'Övrigt': '🗂️',
+  'Plugg': '📚',
+  'Träning': '🏋️',
+  'Hem': '🏠',
+  'Socialt': '👥',
+  'Mental hälsa': '🧘',
+};
 
 export default function TaskInputScreen({ route, navigation }: Props) {
   const prefill = route.params?.prefill;
@@ -178,7 +186,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         accessibilityLabel="categoryButton"
         style={styles.categoryBtn}
         onPress={() => setShowCategory(true)}>
-        <Text style={styles.categoryBtnText}>{category}</Text>
+        <Text style={styles.categoryBtnText}>{CATEGORY_ICONS[category]} {category}</Text>
         <Text style={styles.categoryChevron}>▾</Text>
       </TouchableOpacity>
 
@@ -235,16 +243,24 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
             <Text style={styles.modalTitle}>Välj kategori</Text>
-            {CATEGORIES.map(cat => (
-              <TouchableOpacity
-                key={cat}
-                style={styles.categoryRow}
-                onPress={() => { setCategory(cat); setShowCategory(false); }}>
-                <Text style={[styles.categoryRowText, cat === category && styles.categoryRowSelected]}>
-                  {cat === category ? '● ' : '○ '}{cat}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            <View style={styles.categoryGrid}>
+              {CATEGORIES.map(cat => {
+                const selected = cat === category;
+                return (
+                  <TouchableOpacity
+                    key={cat}
+                    style={[styles.categoryCard, selected && styles.categoryCardSelected]}
+                    onPress={() => { setCategory(cat); setShowCategory(false); }}>
+                    <View style={[styles.categoryIconCircle, selected && styles.categoryIconCircleSelected]}>
+                      <Text style={styles.categoryIconEmoji}>{CATEGORY_ICONS[cat]}</Text>
+                    </View>
+                    <Text style={[styles.categoryCardLabel, selected && styles.categoryCardLabelSelected]}>
+                      {cat}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
         </View>
       </Modal>
@@ -339,6 +355,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee',
   },
   templateName: { fontSize: 16 },
+  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  categoryCard: {
+    width: '47%', backgroundColor: '#fff', borderRadius: 12,
+    padding: 14, alignItems: 'center', marginBottom: 12,
+    borderWidth: 1, borderColor: '#eee',
+  },
+  categoryCardSelected: { borderColor: '#4CAF50', backgroundColor: '#f0faf0' },
+  categoryIconCircle: {
+    width: 56, height: 56, borderRadius: 28,
+    backgroundColor: '#e8f5e9', alignItems: 'center', justifyContent: 'center', marginBottom: 6,
+  },
+  categoryIconCircleSelected: { backgroundColor: '#4CAF50' },
+  categoryIconEmoji: { fontSize: 28 },
+  categoryCardLabel: { fontSize: 13, fontWeight: '600', color: '#333' },
+  categoryCardLabelSelected: { color: '#4CAF50' },
   categoryBtn: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
@@ -346,9 +377,6 @@ const styles = StyleSheet.create({
   },
   categoryBtnText: { fontSize: 16, color: '#333' },
   categoryChevron: { fontSize: 16, color: '#888' },
-  categoryRow: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-  categoryRowText: { fontSize: 16, color: '#333' },
-  categoryRowSelected: { color: '#4CAF50', fontWeight: '600' },
   templateDeleteAction: {
     backgroundColor: '#e53935', justifyContent: 'center',
     alignItems: 'center', width: 80,
