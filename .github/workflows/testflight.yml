@@ -37,17 +37,9 @@ jobs:
           key: pods-xcode26-v3-${{ hashFiles('ios/Podfile') }}
 
       - name: Install CocoaPods
-        if: steps.pods-cache.outputs.cache-hit != 'true'
         run: |
           bundle install
-          bundle exec pod install --project-directory=ios
-
-      - name: Generate React Native codegen artifacts
-        run: |
-          node node_modules/react-native/scripts/generate-codegen-artifacts.js \
-            -p . \
-            -t ios \
-            -o ios
+          bundle exec pod install --project-directory=ios --no-repo-update
 
       - name: Import Distribution Certificate
         env:
