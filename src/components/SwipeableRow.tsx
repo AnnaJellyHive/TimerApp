@@ -47,7 +47,7 @@ export default function SwipeableRow({
   function handleDelete() {
     Animated.timing(translateX, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
       isOpen.current = false;
-      onDelete();
+      setTimeout(() => onDelete(), 0);
     });
   }
 

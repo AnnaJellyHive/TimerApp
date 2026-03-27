@@ -9,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import Sound from 'react-native-sound';
 
-Sound.setCategory('Playback');
+Sound.setCategory('Playback', true);
 
 function BreakAnimation() {
   return (
@@ -120,7 +120,9 @@ export default function TimerScreen({ route, navigation }: Props) {
         setIsBreak(true);
       } else {
         soundEnd.current?.stop(() => soundEnd.current?.play());
-        navigation.replace('Continue', { taskName, subtasks, durationSeconds, breakDurationSeconds, category });
+        setTimeout(() => {
+          navigation.replace('Continue', { taskName, subtasks, durationSeconds, breakDurationSeconds, category });
+        }, 500);
       }
     } else {
       setCurrentIndex(prev => prev + 1);
