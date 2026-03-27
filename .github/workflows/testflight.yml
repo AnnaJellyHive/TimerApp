@@ -33,7 +33,8 @@ jobs:
             ios/Pods
             ios/TimerApp.xcworkspace
             ios/build/generated
-          key: pods-xcode26-${{ hashFiles('ios/Podfile.lock') }}
+            ios/Podfile.lock
+          key: pods-xcode26-v2-${{ hashFiles('ios/Podfile') }}
 
       - name: Install CocoaPods
         if: steps.pods-cache.outputs.cache-hit != 'true'
