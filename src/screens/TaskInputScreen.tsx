@@ -186,7 +186,9 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         accessibilityLabel="categoryButton"
         style={styles.categoryBtn}
         onPress={() => setShowCategory(true)}>
-        <Text style={styles.categoryBtnText}>{CATEGORY_ICONS[category]} {category}</Text>
+        <View style={{ filter: [{ grayscale: 1 }] } as any}>
+          <Text style={styles.categoryBtnText}>{CATEGORY_ICONS[category]} {category}</Text>
+        </View>
         <Text style={styles.categoryChevron}>▾</Text>
       </TouchableOpacity>
 
@@ -252,7 +254,9 @@ export default function TaskInputScreen({ route, navigation }: Props) {
                     style={[styles.categoryCard, selected && styles.categoryCardSelected]}
                     onPress={() => { setCategory(cat); setShowCategory(false); }}>
                     <View style={[styles.categoryIconCircle, selected && styles.categoryIconCircleSelected]}>
-                      <Text style={styles.categoryIconEmoji}>{CATEGORY_ICONS[cat]}</Text>
+                      <View style={{ filter: [{ grayscale: 1 }] } as any}>
+                        <Text style={styles.categoryIconEmoji}>{CATEGORY_ICONS[cat]}</Text>
+                      </View>
                     </View>
                     <Text style={[styles.categoryCardLabel, selected && styles.categoryCardLabelSelected]}>
                       {cat}
