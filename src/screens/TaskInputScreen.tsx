@@ -257,7 +257,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
                     <View style={[styles.categoryIconCircle, selected && styles.categoryIconCircleSelected]}>
                       <View>
                         <Text style={styles.categoryIconEmoji}>{CATEGORY_ICONS[cat]}</Text>
-                        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'gray', mixBlendMode: 'color' } as any} />
+                        {!selected && <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'gray', mixBlendMode: 'color' } as any} />}
                       </View>
                     </View>
                     <Text style={[styles.categoryCardLabel, selected && styles.categoryCardLabelSelected]}>
