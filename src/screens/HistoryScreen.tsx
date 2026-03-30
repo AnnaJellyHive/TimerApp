@@ -89,6 +89,7 @@ export default function HistoryScreen({ navigation }: Props) {
       )}
 
       <TouchableOpacity
+        testID="newTaskButton"
         accessibilityLabel="newTaskButton"
         style={styles.primaryBtn}
         onPress={() => navigation.navigate('TaskInput')}>

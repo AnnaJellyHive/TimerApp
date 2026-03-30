@@ -142,13 +142,13 @@ export default function TimerScreen({ route, navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text testID="timerModeLabel" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'timerModeLabel' : undefined} style={styles.modeLabel}>{modeLabel}</Text>
+      <Text testID="timerModeLabel" accessibilityLabel={Platform.OS === 'android' ? 'timerModeLabel' : undefined} style={styles.modeLabel}>{modeLabel}</Text>
 
-      <Text testID="timerTaskName" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'timerTaskName' : undefined} style={styles.taskName} numberOfLines={2}>
+      <Text testID="timerTaskName" accessibilityLabel={Platform.OS === 'android' ? 'timerTaskName' : undefined} style={styles.taskName} numberOfLines={2}>
         {isBreak && nextSubtask ? `Nästa: ${nextSubtask}` : subtasks[currentIndex]}
       </Text>
 
-      <Text testID="timerProgress" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'timerProgress' : undefined} style={styles.progress}>
+      <Text testID="timerProgress" accessibilityLabel={Platform.OS === 'android' ? 'timerProgress' : undefined} style={styles.progress}>
         {isBreak ? 'Paus' : `${currentIndex + 1} av ${subtasks.length}`}
       </Text>
 
