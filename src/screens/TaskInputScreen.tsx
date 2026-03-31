@@ -187,7 +187,10 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         style={styles.categoryBtn}
         onPress={() => setShowCategory(true)}>
         <View>
-          <Text style={styles.categoryBtnText}>{CATEGORY_ICONS[category]} {category}</Text>
+          <Text
+            testID="selectedCategoryLabel"
+            accessibilityLabel={Platform.OS === 'android' ? 'selectedCategoryLabel' : undefined}
+            style={styles.categoryBtnText}>{CATEGORY_ICONS[category]} {category}</Text>
           <View pointerEvents="none" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'gray', mixBlendMode: 'color' } as any} />
         </View>
         <Text style={styles.categoryChevron}>▾</Text>
@@ -252,6 +255,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
                 return (
                   <TouchableOpacity
                     key={cat}
+                    accessibilityLabel={cat}
                     style={[styles.categoryCard, selected && styles.categoryCardSelected]}
                     onPress={() => { setCategory(cat); setShowCategory(false); }}>
                     <View style={[styles.categoryIconCircle, selected && styles.categoryIconCircleSelected]}>
