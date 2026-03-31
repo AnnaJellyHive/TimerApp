@@ -223,15 +223,17 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </View>
 
       {/* Knappar */}
-      <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer} style={{ marginTop: 16 }}>
-        <LinearGradient
-          colors={['#1d6d2b', '#0a6120']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.primaryBtn}>
-          <Text style={styles.primaryBtnText}>Starta</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <View style={styles.primaryBtnWrapper}>
+        <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer}>
+          <LinearGradient
+            colors={['#1d6d2b', '#0a6120']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.primaryBtn}>
+            <Text style={styles.primaryBtnText}>Starta</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.row}>
         <TouchableOpacity accessibilityLabel="saveTemplateButton" style={styles.secondaryBtn} onPress={saveTemplate}>
@@ -340,7 +342,8 @@ const styles = StyleSheet.create({
   },
   chipText: { fontSize: 14, marginRight: 8 },
   chipClose: { fontSize: 14, color: '#888' },
-  primaryBtn: { borderRadius: 9999, paddingVertical: 14, alignItems: 'center' },
+  primaryBtnWrapper: { borderRadius: 9999, overflow: 'hidden', marginTop: 16 },
+  primaryBtn: { paddingVertical: 14, alignItems: 'center' },
   primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   secondaryBtn: {
     borderRadius: 9999,
