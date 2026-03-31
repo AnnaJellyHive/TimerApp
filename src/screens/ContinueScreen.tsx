@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -41,20 +40,13 @@ export default function ContinueScreen({ route, navigation }: Props) {
       <Text testID="continueTaskName" accessibilityLabel={Platform.OS === 'android' ? 'continueTaskName' : undefined} style={styles.taskName}>{taskName}</Text>
       <Text style={styles.question}>Vill du köra en gång till?</Text>
 
-      <View style={styles.primaryBtnWrapper}>
-        <TouchableOpacity
-          testID="continueYesButton"
-          accessibilityLabel="continueYesButton"
-          onPress={() => saveAndGoTo('timer')}>
-          <LinearGradient
-            colors={['#1d6d2b', '#0a6120']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.primaryBtn}>
-            <Text style={styles.primaryBtnText}>Ja, kör igen!</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        testID="continueYesButton"
+        accessibilityLabel="continueYesButton"
+        style={styles.primaryBtn}
+        onPress={() => saveAndGoTo('timer')}>
+        <Text style={styles.primaryBtnText}>Ja, kör igen!</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         testID="continueNoButton"
@@ -73,8 +65,7 @@ const styles = StyleSheet.create({
   doneLabel: { fontSize: 28, fontWeight: 'bold', marginBottom: 12, textAlign: 'center', color: '#2d3432' },
   taskName: { fontSize: 18, color: '#536350', marginBottom: 32, textAlign: 'center' },
   question: { fontSize: 16, marginBottom: 24, color: '#2d3432' },
-  primaryBtnWrapper: { borderRadius: 9999, overflow: 'hidden', width: '100%', marginBottom: 12 },
-  primaryBtn: { paddingVertical: 14, alignItems: 'center' },
+  primaryBtn: { backgroundColor: '#1d6d2b', borderRadius: 9999, paddingVertical: 14, alignItems: 'center', width: '100%', marginBottom: 12 },
   primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   secondaryBtn: { borderRadius: 9999, padding: 14, alignItems: 'center', width: '100%' },
   secondaryBtnText: { color: '#1d6d2b', fontSize: 16 },

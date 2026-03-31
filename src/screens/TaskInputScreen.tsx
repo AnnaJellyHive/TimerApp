@@ -3,7 +3,6 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   StyleSheet, Alert, Modal, FlatList, Image, KeyboardAvoidingView, Platform, Dimensions,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import BottomNavBar from '../components/BottomNavBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeableRow from '../components/SwipeableRow';
@@ -223,17 +222,9 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </View>
 
       {/* Knappar */}
-      <View style={styles.primaryBtnWrapper}>
-        <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer}>
-          <LinearGradient
-            colors={['#1d6d2b', '#0a6120']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.primaryBtn}>
-            <Text style={styles.primaryBtnText}>Starta</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer} style={styles.primaryBtn}>
+        <Text style={styles.primaryBtnText}>Starta</Text>
+      </TouchableOpacity>
 
       <View style={styles.row}>
         <TouchableOpacity accessibilityLabel="saveTemplateButton" style={styles.secondaryBtn} onPress={saveTemplate}>
@@ -342,8 +333,7 @@ const styles = StyleSheet.create({
   },
   chipText: { fontSize: 14, marginRight: 8 },
   chipClose: { fontSize: 14, color: '#888' },
-  primaryBtnWrapper: { borderRadius: 9999, overflow: 'hidden', marginTop: 16 },
-  primaryBtn: { paddingVertical: 14, alignItems: 'center' },
+  primaryBtn: { backgroundColor: '#1d6d2b', borderRadius: 9999, paddingVertical: 14, alignItems: 'center', marginTop: 16 },
   primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   secondaryBtn: {
     borderRadius: 9999,
