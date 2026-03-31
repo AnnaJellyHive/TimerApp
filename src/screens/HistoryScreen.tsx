@@ -3,6 +3,7 @@ import {
   View, Text, FlatList, TouchableOpacity,
   StyleSheet, Alert, ActivityIndicator, Platform,
 } from 'react-native';
+import BottomNavBar from '../components/BottomNavBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeableRow from '../components/SwipeableRow';
 import { useFocusEffect } from '@react-navigation/native';
@@ -51,10 +52,9 @@ export default function HistoryScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Historik</Text>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 48 }} />
+        <ActivityIndicator size="large" color="#1d6d2b" style={{ marginTop: 48 }} />
       ) : tasks.length === 0 ? (
         <Text testID="emptyHistoryText" style={styles.empty}>
           Inga avklarade uppgifter de senaste 3 dagarna
@@ -62,6 +62,8 @@ export default function HistoryScreen({ navigation }: Props) {
       ) : (
         <FlatList
           accessibilityLabel="taskHistoryList"
+          style={styles.list}
+          contentContainerStyle={{ paddingBottom: 16 }}
           data={[...tasks].reverse()}
           keyExtractor={t => t.id}
           renderItem={({ item }) => (
@@ -88,37 +90,24 @@ export default function HistoryScreen({ navigation }: Props) {
         />
       )}
 
-      <TouchableOpacity
-        testID="newTaskButton"
-        accessibilityLabel="newTaskButton"
-        style={styles.primaryBtn}
-        onPress={() => navigation.navigate('TaskInput')}>
-        <Text style={styles.primaryBtnText}>Ny uppgift</Text>
-      </TouchableOpacity>
+      <BottomNavBar activeTab="Historik" onTabPress={tab => { if (tab === 'Uppgifter') navigation.navigate('TaskInput'); }} />
     </SafeAreaView>
   );
 }
 
-const GREEN = '#4CAF50';
-
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
-  empty: { fontSize: 16, color: '#888', textAlign: 'center', marginTop: 48 },
+  container: { flex: 1, backgroundColor: '#f8faf8' },
+  list: { flex: 1, paddingHorizontal: 24, paddingTop: 24 },
+  empty: { fontSize: 16, color: '#536350', textAlign: 'center', marginTop: 48 },
   card: {
-    backgroundColor: '#f9f9f9', borderRadius: 10,
+    backgroundColor: '#fff', borderRadius: 10,
     padding: 16, elevation: 1,
   },
-  cardTitle: { fontSize: 16, fontWeight: '600', marginBottom: 4 },
-  cardSub: { fontSize: 13, color: '#666' },
+  cardTitle: { fontSize: 16, fontWeight: '600', marginBottom: 4, color: '#2d3432' },
+  cardSub: { fontSize: 13, color: '#536350' },
   categoryChip: {
     alignSelf: 'flex-start', backgroundColor: '#e8f5e9',
     borderRadius: 12, paddingHorizontal: 8, paddingVertical: 2, marginTop: 4,
   },
-  categoryChipText: { fontSize: 11, color: '#388E3C' },
-  primaryBtn: {
-    backgroundColor: GREEN, borderRadius: 8,
-    padding: 14, alignItems: 'center', marginTop: 16,
-  },
-  primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  categoryChipText: { fontSize: 11, color: '#1d6d2b' },
 });

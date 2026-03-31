@@ -3,6 +3,8 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   StyleSheet, Alert, Modal, FlatList, Image, KeyboardAvoidingView, Platform, Dimensions,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import BottomNavBar from '../components/BottomNavBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeableRow from '../components/SwipeableRow';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -119,7 +121,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8faf8' }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
 
@@ -221,8 +223,14 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </View>
 
       {/* Knappar */}
-      <TouchableOpacity accessibilityLabel="startButton" style={styles.primaryBtn} onPress={startTimer}>
-        <Text style={styles.primaryBtnText}>Starta</Text>
+      <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer} style={styles.primaryBtnWrapper}>
+        <LinearGradient
+          colors={['#1d6d2b', '#0a6120']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.primaryBtn}>
+          <Text style={styles.primaryBtnText}>Starta</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
       <View style={styles.row}>
@@ -233,10 +241,6 @@ export default function TaskInputScreen({ route, navigation }: Props) {
           <Text style={styles.secondaryBtnText}>Välj sparad uppgift</Text>
         </TouchableOpacity>
       </View>
-
-      <TouchableOpacity accessibilityLabel="historyButton" style={styles.secondaryBtn} onPress={() => navigation.navigate('History')}>
-        <Text style={styles.secondaryBtnText}>Historik</Text>
-      </TouchableOpacity>
 
       {hasContent && (
         <TouchableOpacity accessibilityLabel="clearButton" style={styles.clearBtn} onPress={clearAll}>
@@ -306,26 +310,25 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </Modal>
     </ScrollView>
     </KeyboardAvoidingView>
+    <BottomNavBar activeTab="Uppgifter" onTabPress={tab => { if (tab === 'Historik') navigation.navigate('History'); }} />
     </SafeAreaView>
   );
 }
 
-const GREEN = '#4CAF50';
-
 const styles = StyleSheet.create({
   appTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16, marginTop: 8 },
   appTitleIcon: { width: 32, height: 32, marginRight: 8 },
-  appTitle: { fontSize: 26, fontWeight: 'bold', color: GREEN },
+  appTitle: { fontSize: 26, fontWeight: 'bold', color: '#1d6d2b' },
   container: { padding: 24, paddingBottom: 48 },
-  label: { fontSize: 14, fontWeight: '600', marginTop: 16, marginBottom: 4 },
+  label: { fontSize: 14, fontWeight: '600', marginTop: 16, marginBottom: 4, color: '#2d3432' },
   input: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
-    padding: 10, fontSize: 16, marginBottom: 8, backgroundColor: '#fff',
+    borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.15)', borderRadius: 8,
+    padding: 10, fontSize: 16, marginBottom: 8, backgroundColor: '#f0f4f0', color: '#2d3432',
   },
   error: { color: 'red', fontSize: 12, marginBottom: 4 },
   row: { flexDirection: 'row', gap: 8, marginBottom: 8 },
   addBtn: {
-    backgroundColor: GREEN, borderRadius: 8,
+    backgroundColor: '#1d6d2b', borderRadius: 9999,
     paddingHorizontal: 16, justifyContent: 'center', marginLeft: 8,
   },
   addBtnText: { color: '#fff', fontSize: 22, fontWeight: 'bold' },
@@ -337,20 +340,18 @@ const styles = StyleSheet.create({
   },
   chipText: { fontSize: 14, marginRight: 8 },
   chipClose: { fontSize: 14, color: '#888' },
-  primaryBtn: {
-    backgroundColor: GREEN, borderRadius: 8,
-    padding: 14, alignItems: 'center', marginTop: 16,
-  },
+  primaryBtnWrapper: { borderRadius: 9999, overflow: 'hidden', marginTop: 16 },
+  primaryBtn: { borderRadius: 9999, paddingVertical: 14, paddingHorizontal: 32, alignItems: 'center' },
   primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   secondaryBtn: {
-    borderWidth: 1, borderColor: GREEN, borderRadius: 8,
+    borderRadius: 9999,
     padding: 10, alignItems: 'center', marginTop: 8, flex: 1,
   },
-  secondaryBtnText: { color: GREEN, fontSize: 14 },
+  secondaryBtnText: { color: '#1d6d2b', fontSize: 14 },
   timerRow: { flexDirection: 'row', gap: 12 },
   timerField: { flex: 1 },
   clearBtn: { alignItems: 'center', marginTop: 16 },
-  clearBtnText: { color: '#888', fontSize: 14 },
+  clearBtnText: { color: '#536350', fontSize: 14 },
   modalOverlay: {
     flex: 1, backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center', padding: 24,
@@ -382,11 +383,11 @@ const styles = StyleSheet.create({
   categoryCardLabelSelected: { color: '#4CAF50' },
   categoryBtn: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
-    padding: 10, backgroundColor: '#fff', marginBottom: 8,
+    borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.15)', borderRadius: 8,
+    padding: 10, backgroundColor: '#f0f4f0', marginBottom: 8,
   },
-  categoryBtnText: { fontSize: 16, color: '#333' },
-  categoryChevron: { fontSize: 16, color: '#888' },
+  categoryBtnText: { fontSize: 16, color: '#2d3432' },
+  categoryChevron: { fontSize: 16, color: '#536350' },
   templateDeleteAction: {
     backgroundColor: '#e53935', justifyContent: 'center',
     alignItems: 'center', width: 80,
