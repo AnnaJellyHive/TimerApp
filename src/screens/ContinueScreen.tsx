@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -43,9 +44,15 @@ export default function ContinueScreen({ route, navigation }: Props) {
       <TouchableOpacity
         testID="continueYesButton"
         accessibilityLabel="continueYesButton"
-        style={styles.primaryBtn}
+        style={styles.primaryBtnWrapper}
         onPress={() => saveAndGoTo('timer')}>
-        <Text style={styles.primaryBtnText}>Ja, kör igen!</Text>
+        <LinearGradient
+          colors={['#1d6d2b', '#0a6120']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.primaryBtn}>
+          <Text style={styles.primaryBtnText}>Ja, kör igen!</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -59,22 +66,15 @@ export default function ContinueScreen({ route, navigation }: Props) {
   );
 }
 
-const GREEN = '#4CAF50';
-
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32, backgroundColor: '#f8faf8' },
   konfetti: { width: 180, height: 180, marginBottom: 8 },
-  doneLabel: { fontSize: 28, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
-  taskName: { fontSize: 18, color: '#555', marginBottom: 32, textAlign: 'center' },
-  question: { fontSize: 16, marginBottom: 24 },
-  primaryBtn: {
-    backgroundColor: GREEN, borderRadius: 8,
-    padding: 14, alignItems: 'center', width: '100%', marginBottom: 12,
-  },
+  doneLabel: { fontSize: 28, fontWeight: 'bold', marginBottom: 12, textAlign: 'center', color: '#2d3432' },
+  taskName: { fontSize: 18, color: '#536350', marginBottom: 32, textAlign: 'center' },
+  question: { fontSize: 16, marginBottom: 24, color: '#2d3432' },
+  primaryBtnWrapper: { borderRadius: 9999, overflow: 'hidden', width: '100%', marginBottom: 12 },
+  primaryBtn: { borderRadius: 9999, paddingVertical: 14, paddingHorizontal: 32, alignItems: 'center' },
   primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  secondaryBtn: {
-    borderWidth: 1, borderColor: GREEN, borderRadius: 8,
-    padding: 14, alignItems: 'center', width: '100%',
-  },
-  secondaryBtnText: { color: GREEN, fontSize: 16 },
+  secondaryBtn: { borderRadius: 9999, padding: 14, alignItems: 'center', width: '100%' },
+  secondaryBtnText: { color: '#1d6d2b', fontSize: 16 },
 });

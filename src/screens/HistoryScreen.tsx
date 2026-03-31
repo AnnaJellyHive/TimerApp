@@ -53,42 +53,45 @@ export default function HistoryScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.container}>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#1d6d2b" style={{ marginTop: 48 }} />
-      ) : tasks.length === 0 ? (
-        <Text testID="emptyHistoryText" style={styles.empty}>
-          Inga avklarade uppgifter de senaste 3 dagarna
-        </Text>
-      ) : (
-        <FlatList
-          accessibilityLabel="taskHistoryList"
-          style={styles.list}
-          contentContainerStyle={{ paddingBottom: 16 }}
-          data={[...tasks].reverse()}
-          keyExtractor={t => t.id}
-          renderItem={({ item }) => (
-            <SwipeableRow
-              deleteAccessibilityLabel="historyDeleteYes"
-              onDelete={() => deleteTask(item)}
-              containerStyle={{ marginBottom: 10 }}>
-              <TouchableOpacity onPress={() => reuseTask(item)}>
-                <View testID={`historyItem_${item.id}`} style={styles.card}>
-                  <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
-                    {item.taskName}
-                  </Text>
-                  <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
-                  <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
-                  {item.category && item.category !== 'Övrigt' && (
-                    <View style={styles.categoryChip}>
-                      <Text style={styles.categoryChipText}>{item.category}</Text>
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            </SwipeableRow>
-          )}
-        />
-      )}
+      <View style={{ flex: 1 }}>
+        <Text style={styles.title}>Historik</Text>
+        {loading ? (
+          <ActivityIndicator size="large" color="#1d6d2b" style={{ marginTop: 48 }} />
+        ) : tasks.length === 0 ? (
+          <Text testID="emptyHistoryText" style={styles.empty}>
+            Inga avklarade uppgifter de senaste 3 dagarna
+          </Text>
+        ) : (
+          <FlatList
+            accessibilityLabel="taskHistoryList"
+            style={styles.list}
+            contentContainerStyle={{ paddingBottom: 16 }}
+            data={[...tasks].reverse()}
+            keyExtractor={t => t.id}
+            renderItem={({ item }) => (
+              <SwipeableRow
+                deleteAccessibilityLabel="historyDeleteYes"
+                onDelete={() => deleteTask(item)}
+                containerStyle={{ marginBottom: 10 }}>
+                <TouchableOpacity onPress={() => reuseTask(item)}>
+                  <View testID={`historyItem_${item.id}`} style={styles.card}>
+                    <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
+                      {item.taskName}
+                    </Text>
+                    <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
+                    <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
+                    {item.category && item.category !== 'Övrigt' && (
+                      <View style={styles.categoryChip}>
+                        <Text style={styles.categoryChipText}>{item.category}</Text>
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </SwipeableRow>
+            )}
+          />
+        )}
+      </View>
 
       <BottomNavBar activeTab="Historik" onTabPress={tab => { if (tab === 'Uppgifter') navigation.navigate('TaskInput'); }} />
     </SafeAreaView>
@@ -97,7 +100,8 @@ export default function HistoryScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f8faf8' },
-  list: { flex: 1, paddingHorizontal: 24, paddingTop: 24 },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#2d3432', paddingHorizontal: 24, paddingTop: 24, marginBottom: 8 },
+  list: { flex: 1, paddingHorizontal: 24 },
   empty: { fontSize: 16, color: '#536350', textAlign: 'center', marginTop: 48 },
   card: {
     backgroundColor: '#fff', borderRadius: 10,
