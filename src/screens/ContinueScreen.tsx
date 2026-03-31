@@ -44,7 +44,7 @@ export default function ContinueScreen({ route, navigation }: Props) {
       <TouchableOpacity
         testID="continueYesButton"
         accessibilityLabel="continueYesButton"
-        style={styles.primaryBtnWrapper}
+        style={{ width: '100%', marginBottom: 12 }}
         onPress={() => saveAndGoTo('timer')}>
         <LinearGradient
           colors={['#1d6d2b', '#0a6120']}
@@ -72,8 +72,7 @@ const styles = StyleSheet.create({
   doneLabel: { fontSize: 28, fontWeight: 'bold', marginBottom: 12, textAlign: 'center', color: '#2d3432' },
   taskName: { fontSize: 18, color: '#536350', marginBottom: 32, textAlign: 'center' },
   question: { fontSize: 16, marginBottom: 24, color: '#2d3432' },
-  primaryBtnWrapper: { borderRadius: 9999, overflow: 'hidden', width: '100%', marginBottom: 12 },
-  primaryBtn: { borderRadius: 9999, paddingVertical: 14, paddingHorizontal: 32, alignItems: 'center' },
+  primaryBtn: { borderRadius: 9999, paddingVertical: 14, alignItems: 'center' },
   primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   secondaryBtn: { borderRadius: 9999, padding: 14, alignItems: 'center', width: '100%' },
   secondaryBtnText: { color: '#1d6d2b', fontSize: 16 },

@@ -181,23 +181,21 @@ export default function TimerScreen({ route, navigation }: Props) {
   );
 }
 
-const GREEN = '#4CAF50';
-
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32 },
-  modeLabel: { fontSize: 22, fontWeight: 'bold', marginBottom: 8 },
-  taskName: { fontSize: 18, textAlign: 'center', marginBottom: 4 },
-  progress: { fontSize: 14, color: '#888', marginBottom: 40 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32, backgroundColor: '#f8faf8' },
+  modeLabel: { fontSize: 22, fontWeight: 'bold', marginBottom: 8, color: '#2d3432' },
+  taskName: { fontSize: 18, textAlign: 'center', marginBottom: 4, color: '#2d3432' },
+  progress: { fontSize: 14, color: '#536350', marginBottom: 40 },
   animation: { width: 120, height: 120, marginBottom: 16 },
-  timerDisplay: { fontSize: 80, fontWeight: 'bold', marginBottom: 24 },
+  timerDisplay: { fontSize: 80, fontWeight: 'bold', marginBottom: 24, color: '#2d3432' },
   progressBarBg: {
     flexDirection: 'row', width: '100%', height: 16,
-    backgroundColor: '#e0e0e0', borderRadius: 8, marginBottom: 48, overflow: 'hidden',
+    backgroundColor: '#e0e0e0', borderRadius: 9999, marginBottom: 48, overflow: 'hidden',
   },
-  progressBarFill: { backgroundColor: GREEN },
+  progressBarFill: { backgroundColor: '#1d6d2b' },
   breakAnimationContainer: {
     width: 160, height: 160, borderRadius: 80,
-    backgroundColor: GREEN, marginBottom: 16,
+    backgroundColor: '#a4f6a3', marginBottom: 16,
     alignItems: 'center', justifyContent: 'center',
     overflow: 'hidden',
   },
@@ -205,8 +203,7 @@ const styles = StyleSheet.create({
     width: 140, height: 140,
   },
   cancelBtn: {
-    borderWidth: 1, borderColor: GREEN,
-    borderRadius: 8, paddingHorizontal: 24, paddingVertical: 10,
+    borderRadius: 9999, paddingHorizontal: 24, paddingVertical: 10,
   },
-  cancelBtnText: { color: GREEN, fontSize: 16 },
+  cancelBtnText: { color: '#1d6d2b', fontSize: 16 },
 });

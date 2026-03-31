@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   StyleSheet, Alert, Modal, FlatList, Image, KeyboardAvoidingView, Platform, Dimensions,
@@ -223,7 +223,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </View>
 
       {/* Knappar */}
-      <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer} style={styles.primaryBtnWrapper}>
+      <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer} style={{ marginTop: 16 }}>
         <LinearGradient
           colors={['#1d6d2b', '#0a6120']}
           start={{ x: 0, y: 0 }}
@@ -340,8 +340,7 @@ const styles = StyleSheet.create({
   },
   chipText: { fontSize: 14, marginRight: 8 },
   chipClose: { fontSize: 14, color: '#888' },
-  primaryBtnWrapper: { borderRadius: 9999, overflow: 'hidden', marginTop: 16 },
-  primaryBtn: { borderRadius: 9999, paddingVertical: 14, paddingHorizontal: 32, alignItems: 'center' },
+  primaryBtn: { borderRadius: 9999, paddingVertical: 14, alignItems: 'center' },
   primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   secondaryBtn: {
     borderRadius: 9999,
