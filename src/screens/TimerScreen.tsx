@@ -13,15 +13,23 @@ import { getCategoryConfig } from '../utils/categoryConfig';
 Sound.setCategory('Ambient', true);
 
 function BreakAnimation({ color }: { color: string }) {
+  const lottieRef = useRef<LottieView>(null);
+
+  useEffect(() => {
+    lottieRef.current?.play();
+  }, []);
+
   return (
     <View
       accessible
       accessibilityLabel="breakAnimation"
       style={[styles.breakAnimationContainer, { backgroundColor: color }]}>
       <LottieView
+        ref={lottieRef}
         source={require('../../assets/Little coffee cup.lottie')}
         autoPlay
         loop
+        resizeMode="contain"
         style={styles.breakLottie}
       />
     </View>
@@ -174,7 +182,7 @@ export default function TimerScreen({ route, navigation }: Props) {
           testID="timerModeLabel"
           accessible={true}
           accessibilityLabel={Platform.OS === 'android' ? 'timerModeLabel' : undefined}
-          style={[styles.modeLabel, { fontWeight: isBreak ? '400' : 'bold' }]}>
+          style={styles.modeLabel}>
           {modeLabel}
         </Text>
 
@@ -200,14 +208,7 @@ export default function TimerScreen({ route, navigation }: Props) {
             accessible={true}
             accessibilityLabel="timerAnimation"
             style={[styles.focusIconContainer, { transform: [{ scale: pulseAnim }] }]}>
-            <View>
-              <Text style={styles.focusIconEmoji}>{cfg.emoji}</Text>
-              <View
-                pointerEvents="none"
-                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                         backgroundColor: cfg.accent, mixBlendMode: 'color' } as any}
-              />
-            </View>
+            <Text style={styles.focusIconEmoji}>{cfg.emoji}</Text>
           </Animated.View>
         )}
         {isBreak && <BreakAnimation color={cfg.accentLight} />}
@@ -265,9 +266,9 @@ const styles = StyleSheet.create({
     fontSize: 11, fontWeight: '600', letterSpacing: 3,
     color: '#536350', opacity: 0.6, textTransform: 'uppercase',
   },
-  categoryHeaderName: { fontSize: 20, fontWeight: 'bold', color: '#2d3432' },
-  modeLabel: { fontSize: 22, marginBottom: 8, color: '#2d3432' },
-  taskName: { fontSize: 18, textAlign: 'center', marginBottom: 4, color: '#2d3432' },
+  categoryHeaderName: { fontSize: 20, color: '#2d3432' },
+  modeLabel: { fontSize: 22, fontWeight: 'bold', marginBottom: 8, color: '#2d3432' },
+  taskName: { fontSize: 22, textAlign: 'center', marginBottom: 4, color: '#2d3432' },
   progress: { fontSize: 14, color: '#536350', marginBottom: 40 },
   focusIconContainer: {
     width: 96, height: 96, borderRadius: 48,

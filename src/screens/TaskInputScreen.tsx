@@ -187,13 +187,10 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         accessibilityLabel="categoryButton"
         style={styles.categoryBtn}
         onPress={() => setShowCategory(true)}>
-        <View>
-          <Text
-            testID="selectedCategoryLabel"
-            accessibilityLabel={Platform.OS === 'android' ? 'selectedCategoryLabel' : undefined}
-            style={styles.categoryBtnText}>{CATEGORY_ICONS[category]} {category}</Text>
-          <View pointerEvents="none" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'gray', mixBlendMode: 'color' } as any} />
-        </View>
+        <Text
+          testID="selectedCategoryLabel"
+          accessibilityLabel={Platform.OS === 'android' ? 'selectedCategoryLabel' : undefined}
+          style={styles.categoryBtnText}>{CATEGORY_ICONS[category]} {category}</Text>
         <Text style={styles.categoryChevron}>▾</Text>
       </TouchableOpacity>
 
@@ -256,10 +253,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
                     style={[styles.categoryCard, selected && styles.categoryCardSelected]}
                     onPress={() => { setCategory(cat); setShowCategory(false); }}>
                     <View style={[styles.categoryIconCircle, selected && styles.categoryIconCircleSelected]}>
-                      <View>
-                        <Text style={styles.categoryIconEmoji}>{CATEGORY_ICONS[cat]}</Text>
-                        {!selected && <View pointerEvents="none" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'gray', mixBlendMode: 'color' } as any} />}
-                      </View>
+                      <Text style={styles.categoryIconEmoji}>{CATEGORY_ICONS[cat]}</Text>
                     </View>
                     <Text style={[styles.categoryCardLabel, selected && styles.categoryCardLabelSelected]}>
                       {cat}
@@ -364,15 +358,15 @@ const styles = StyleSheet.create({
     padding: 14, alignItems: 'center', marginBottom: 12,
     borderWidth: 1, borderColor: '#eee',
   },
-  categoryCardSelected: { borderColor: '#4CAF50', backgroundColor: '#f0faf0' },
+  categoryCardSelected: { borderColor: '#1d6d2b', backgroundColor: '#f0faf0' },
   categoryIconCircle: {
     width: 56, height: 56, borderRadius: 28,
-    backgroundColor: '#e8f5e9', alignItems: 'center', justifyContent: 'center', marginBottom: 6,
+    backgroundColor: '#a4f6a3', alignItems: 'center', justifyContent: 'center', marginBottom: 6,
   },
-  categoryIconCircleSelected: { backgroundColor: '#4CAF50' },
+  categoryIconCircleSelected: { backgroundColor: '#1d6d2b' },
   categoryIconEmoji: { fontSize: 28 },
   categoryCardLabel: { fontSize: 13, fontWeight: '600', color: '#333' },
-  categoryCardLabelSelected: { color: '#4CAF50' },
+  categoryCardLabelSelected: { color: '#1d6d2b' },
   categoryBtn: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.15)', borderRadius: 8,
