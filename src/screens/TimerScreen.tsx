@@ -15,10 +15,6 @@ Sound.setCategory('Ambient', true);
 function BreakAnimation({ color }: { color: string }) {
   const lottieRef = useRef<LottieView>(null);
 
-  useEffect(() => {
-    lottieRef.current?.play();
-  }, []);
-
   return (
     <View
       accessible
@@ -28,8 +24,9 @@ function BreakAnimation({ color }: { color: string }) {
         ref={lottieRef}
         source={require('../../assets/Little coffee cup.lottie')}
         autoPlay
-        loop
+        loop={false}
         resizeMode="contain"
+        onAnimationFinish={() => lottieRef.current?.play()}
         style={styles.breakLottie}
       />
     </View>
