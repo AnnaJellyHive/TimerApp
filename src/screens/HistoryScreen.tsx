@@ -10,6 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, CompletedTask } from '../types';
 import * as StreakStore from '../storage/streakStore';
+import { getCategoryConfig } from '../utils/categoryConfig';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
 
@@ -74,18 +75,25 @@ export default function HistoryScreen({ navigation }: Props) {
                 onDelete={() => deleteTask(item)}
                 containerStyle={{ marginBottom: 10 }}>
                 <TouchableOpacity onPress={() => reuseTask(item)}>
-                  <View testID={`historyItem_${item.id}`} style={styles.card}>
-                    <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
-                      {item.taskName}
-                    </Text>
-                    <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
-                    <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
-                    {item.category && item.category !== 'Övrigt' && (
-                      <View style={styles.categoryChip}>
-                        <Text style={styles.categoryChipText}>{item.category}</Text>
+                  {(() => {
+                    const catCfg = getCategoryConfig(item.category);
+                    return (
+                      <View testID={`historyItem_${item.id}`} style={[styles.card, { borderLeftColor: catCfg.accent, borderLeftWidth: 4 }]}>
+                        <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
+                          {item.taskName}
+                        </Text>
+                        <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
+                        <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
+                        {item.category && (
+                          <View style={[styles.categoryChip, { backgroundColor: catCfg.accentLight }]}>
+                            <Text style={[styles.categoryChipText, { color: catCfg.accent }]}>
+                              {catCfg.emoji} {item.category}
+                            </Text>
+                          </View>
+                        )}
                       </View>
-                    )}
-                  </View>
+                    );
+                  })()}
                 </TouchableOpacity>
               </SwipeableRow>
             )}
