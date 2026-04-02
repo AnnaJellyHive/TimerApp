@@ -15,6 +15,25 @@ async function resize(src, dest, size, { flatten = false } = {}) {
   console.log(`  ${size}x${size} → ${dest}`);
 }
 
+async function resizeForeground(src, dest, size) {
+  // Content must stay within inner 72dp of 108dp canvas (safe zone = 66.7%)
+  const contentSize = Math.round(size * 72 / 108);
+  const pad = Math.floor((size - contentSize) / 2);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  await sharp(src)
+    .resize(contentSize, contentSize)
+    .extend({
+      top: pad,
+      bottom: size - contentSize - pad,
+      left: pad,
+      right: size - contentSize - pad,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
+    .png()
+    .toFile(dest);
+  console.log(`  ${size}x${size} foreground → ${dest}`);
+}
+
 async function resizeRound(src, dest, size) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   const circle = Buffer.from(
@@ -53,7 +72,7 @@ async function main() {
   for (const { dir, size } of android) {
     await resize(SRC, `${base}/${dir}/ic_launcher.png`, size);
     await resizeRound(SRC, `${base}/${dir}/ic_launcher_round.png`, size);
-    await resize(SRC, `${base}/${dir}/ic_launcher_foreground.png`, foregroundSizes[dir]);
+    await resizeForeground(SRC, `${base}/${dir}/ic_launcher_foreground.png`, foregroundSizes[dir]);
   }
 
   // iOS AppIcon

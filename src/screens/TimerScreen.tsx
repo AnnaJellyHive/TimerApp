@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     width: 96, height: 96, borderRadius: 48,
     backgroundColor: 'rgba(255,255,255,0.5)',
     alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 12, elevation: 3,
+    shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 12,
   },
   focusIconEmoji: { fontSize: 48 },
   timerDisplay: { fontSize: 80, fontWeight: 'bold', marginBottom: 24, color: '#2d3432' },
