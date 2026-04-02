@@ -1,5 +1,5 @@
 import 'react-native-get-random-values';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar, View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import TaskInputScreen from './src/screens/TaskInputScreen';
 import TimerScreen from './src/screens/TimerScreen';
 import ContinueScreen from './src/screens/ContinueScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
+import { seedDefaultTemplates } from './src/storage/templateStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -48,6 +49,8 @@ const errorStyles = StyleSheet.create({
 });
 
 export default function App() {
+  useEffect(() => { seedDefaultTemplates(); }, []);
+
   return (
     <ErrorBoundary>
       <SafeAreaProvider>
