@@ -135,7 +135,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       <TextInput
         accessibilityLabel="taskInput"
         style={styles.input}
-        placeholder="T.ex. plugga matte, städa rummet"
+        placeholder="T.ex. städa rummet, läsa bok"
         value={taskName}
         onChangeText={setTaskName}
         maxLength={60}
