@@ -17,7 +17,7 @@ const MAX_LENGTH = 50;
 const DEFAULT_DURATION = 120;
 const CATEGORIES = ['Övrigt', 'Plugg', 'Träning', 'Hem', 'Socialt', 'Mental hälsa'];
 const CATEGORY_ICONS: Record<string, string> = {
-  'Övrigt': '🗂️',
+  'Övrigt': '🔘',
   'Plugg': '📚',
   'Träning': '🏋️',
   'Hem': '🏠',

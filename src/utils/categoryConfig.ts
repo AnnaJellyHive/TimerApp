@@ -11,7 +11,7 @@ export const CATEGORY_CONFIG: Record<string, CategoryConfig> = {
   'Träning':      { bgLight: '#e8cccc', accent: '#8b2020', accentLight: '#e8b8b8', emoji: '🏋️' },
   'Plugg':        { bgLight: '#e8e4c0', accent: '#7a6e10', accentLight: '#e0da9a', emoji: '📚' },
   'Hem':          { bgLight: '#d8ccec', accent: '#5c3d8a', accentLight: '#cbb8e8', emoji: '🏠' },
-  'Övrigt':       { bgLight: '#cdd2d0', accent: '#546361', accentLight: '#b8c0be', emoji: '🗂️' },
+  'Övrigt':       { bgLight: '#cdd2d0', accent: '#546361', accentLight: '#b8c0be', emoji: '🔘' },
 };
 
 export const DEFAULT_CONFIG: CategoryConfig = {
