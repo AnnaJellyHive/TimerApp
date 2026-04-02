@@ -9,6 +9,7 @@ import SwipeableRow from '../components/SwipeableRow';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, TaskTemplate } from '../types';
 import * as TemplateStore from '../storage/templateStore';
+import { getCategoryConfig } from '../utils/categoryConfig';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TaskInput'>;
 
@@ -274,17 +275,25 @@ export default function TaskInputScreen({ route, navigation }: Props) {
             <FlatList
               data={templates}
               keyExtractor={t => t.id}
-              renderItem={({ item }) => (
-                <SwipeableRow
-                  deleteAccessibilityLabel="templateDeleteYes"
-                  onDelete={() => deleteTemplate(item.id)}>
-                <View style={styles.templateRow}>
-                  <TouchableOpacity style={{ flex: 1 }} onPress={() => applyTemplate(item)}>
-                    <Text testID="templateItemName" style={styles.templateName}>{item.taskName}</Text>
-                  </TouchableOpacity>
-                </View>
-              </SwipeableRow>
-              )}
+              renderItem={({ item }) => {
+                const catCfg = getCategoryConfig(item.category);
+                return (
+                  <SwipeableRow
+                    deleteAccessibilityLabel="templateDeleteYes"
+                    onDelete={() => deleteTemplate(item.id)}>
+                    <View style={styles.templateRow}>
+                      <TouchableOpacity style={{ flex: 1 }} onPress={() => applyTemplate(item)}>
+                        <Text testID="templateItemName" style={styles.templateName}>{item.taskName}</Text>
+                        <View style={[styles.templateCategoryChip, { backgroundColor: catCfg.accentLight }]}>
+                          <Text style={[styles.templateCategoryChipText, { color: catCfg.accent }]}>
+                            {catCfg.emoji} {item.category ?? 'Övrigt'}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </SwipeableRow>
+                );
+              }}
             />
             <TouchableOpacity
               accessibilityLabel="templateDialogClose"
@@ -379,4 +388,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', width: 80,
   },
   templateDeleteText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
+  templateCategoryChip: {
+    alignSelf: 'flex-start', borderRadius: 9999,
+    paddingHorizontal: 8, paddingVertical: 2, marginTop: 4,
+  },
+  templateCategoryChipText: { fontSize: 11, fontWeight: '600' },
 });

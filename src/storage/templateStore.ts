@@ -51,6 +51,18 @@ export async function seedDefaultTemplates(): Promise<void> {
       durationSeconds: 120,
       breakDurationSeconds: 120,
     },
+    {
+      taskName: 'Fokusskifte - hitta 3 saker',
+      category: 'Mental hälsa',
+      subtasks: [
+        'Hitta 3 saker i rummet som är blå',
+        'Hitta 3 ljud du kan höra',
+        'Känn på 3 saker i rummet som har olika struktor',
+        'Hitta 3 lukter du kan känna',
+      ],
+      durationSeconds: 30,
+      breakDurationSeconds: 10,
+    },
   ];
 
   for (const t of defaults) {
