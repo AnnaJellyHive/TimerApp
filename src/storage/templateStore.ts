@@ -36,8 +36,8 @@ export async function seedDefaultTemplates(): Promise<void> {
       taskName: 'Lugnande andningsövning',
       category: 'Mental hälsa',
       subtasks: ['Andas in', 'Andas ut', 'Andas in igen', 'Och andas ut', 'Andas in en tredje gång', 'Andas ut igen'],
-      durationSeconds: 7,
-      breakDurationSeconds: 4,
+      durationSeconds: 6,
+      breakDurationSeconds: 3,
     },
     {
       taskName: 'Räkna matte',
