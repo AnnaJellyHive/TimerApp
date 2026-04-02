@@ -7,16 +7,18 @@ const fs = require('fs');
 
 const SRC = path.join(__dirname, 'assets', 'ic_launcher.png');
 
-async function resize(src, dest, size, { flatten = false } = {}) {
+async function resize(src, dest, size, { flatten = false, trim = false } = {}) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  let pipeline = sharp(src).resize(size, size);
+  let pipeline = sharp(src);
+  if (trim) pipeline = pipeline.trim();
+  pipeline = pipeline.resize(size, size);
   if (flatten) pipeline = pipeline.flatten({ background: '#ffffff' });
   await pipeline.png().toFile(dest);
   console.log(`  ${size}x${size} → ${dest}`);
 }
 
 async function resizeRound(src, dest, size) {
-  // Scale content to 85% and center in canvas so edge rings aren't clipped
+  // Trim whitespace, scale content to 85% and center so edge rings aren't clipped
   const contentSize = Math.round(size * 0.85);
   const pad = Math.floor((size - contentSize) / 2);
   const circle = Buffer.from(
@@ -24,6 +26,7 @@ async function resizeRound(src, dest, size) {
   );
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   await sharp(src)
+    .trim()
     .resize(contentSize, contentSize)
     .extend({
       top: pad, bottom: size - contentSize - pad,
@@ -59,9 +62,9 @@ async function main() {
 
   console.log('Android ikoner...');
   for (const { dir, size } of android) {
-    await resize(SRC, `${base}/${dir}/ic_launcher.png`, size);
+    await resize(SRC, `${base}/${dir}/ic_launcher.png`, size, { trim: true });
     await resizeRound(SRC, `${base}/${dir}/ic_launcher_round.png`, size);
-    await resize(SRC, `${base}/${dir}/ic_launcher_foreground.png`, foregroundSizes[dir]);
+    await resize(SRC, `${base}/${dir}/ic_launcher_foreground.png`, foregroundSizes[dir], { trim: true });
   }
 
   // iOS AppIcon
