@@ -25,6 +25,9 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Generate app icons
+        run: node generate-icons.js
+
       - name: Cache CocoaPods
         id: pods-cache
         uses: actions/cache@v4

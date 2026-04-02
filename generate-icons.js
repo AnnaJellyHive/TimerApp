@@ -7,9 +7,11 @@ const fs = require('fs');
 
 const SRC = path.join(__dirname, 'assets', 'ic_launcher.png');
 
-async function resize(src, dest, size) {
+async function resize(src, dest, size, { flatten = false } = {}) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  await sharp(src).resize(size, size).png().toFile(dest);
+  let pipeline = sharp(src).resize(size, size);
+  if (flatten) pipeline = pipeline.flatten({ background: '#ffffff' });
+  await pipeline.png().toFile(dest);
   console.log(`  ${size}x${size} → ${dest}`);
 }
 
@@ -76,14 +78,14 @@ async function main() {
   const iosBase = 'ios/TimerApp/Images.xcassets/AppIcon.appiconset';
   console.log('\niOS AppIcon...');
   for (const { name, size } of iosIcons) {
-    await resize(SRC, `${iosBase}/${name}`, size);
+    await resize(SRC, `${iosBase}/${name}`, size, { flatten: true });
   }
 
   // iOS SplashIcon
   const splashBase = 'ios/TimerApp/Images.xcassets/SplashIcon.imageset';
   console.log('\niOS SplashIcon...');
-  await resize(SRC, `${splashBase}/Icon-60@2x.png`, 120);
-  await resize(SRC, `${splashBase}/Icon-60@3x.png`, 180);
+  await resize(SRC, `${splashBase}/Icon-60@2x.png`, 120, { flatten: true });
+  await resize(SRC, `${splashBase}/Icon-60@3x.png`, 180, { flatten: true });
 
   console.log('\nKlart!');
 }
