@@ -13,20 +13,16 @@ import { getCategoryConfig } from '../utils/categoryConfig';
 Sound.setCategory('Ambient', true);
 
 function BreakAnimation({ color }: { color: string }) {
-  const lottieRef = useRef<LottieView>(null);
-
   return (
     <View
       accessible
       accessibilityLabel="breakAnimation"
       style={[styles.breakAnimationContainer, { backgroundColor: color }]}>
       <LottieView
-        ref={lottieRef}
         source={require('../../assets/Little coffee cup.lottie')}
         autoPlay
-        loop={false}
+        loop
         resizeMode="contain"
-        onAnimationFinish={() => lottieRef.current?.play()}
         style={styles.breakLottie}
       />
     </View>
@@ -200,15 +196,16 @@ export default function TimerScreen({ route, navigation }: Props) {
           {isBreak ? 'Paus' : `${currentIndex + 1} av ${subtasks.length}`}
         </Text>
 
-        {!isBreak && (
-          <Animated.View
-            accessible={true}
-            accessibilityLabel="timerAnimation"
-            style={[styles.focusIconContainer, { transform: [{ scale: pulseAnim }] }]}>
-            <Text style={styles.focusIconEmoji}>{cfg.emoji}</Text>
-          </Animated.View>
-        )}
-        {isBreak && <BreakAnimation color={cfg.accentLight} />}
+        <Animated.View
+          accessible={true}
+          accessibilityLabel="timerAnimation"
+          pointerEvents={isBreak ? 'none' : 'auto'}
+          style={[styles.focusIconContainer, { transform: [{ scale: pulseAnim }], opacity: isBreak ? 0 : 1 }]}>
+          <Text style={styles.focusIconEmoji}>{cfg.emoji}</Text>
+        </Animated.View>
+        <View style={{ opacity: isBreak ? 1 : 0 }} pointerEvents={isBreak ? 'auto' : 'none'}>
+          <BreakAnimation color={cfg.accentLight} />
+        </View>
 
         <Text testID="timerDisplay" style={styles.timerDisplay}>
           {formatTime(timeLeft)}
