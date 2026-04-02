@@ -17,6 +17,25 @@ async function resize(src, dest, size, { flatten = false, trim = false } = {}) {
   console.log(`  ${size}x${size} → ${dest}`);
 }
 
+async function resizeForeground(src, dest, size) {
+  // Scale to 72/108 safe zone so the launcher's circular mask doesn't clip the design.
+  // The background color (#1d6d2b) fills the transparent border, matching the design.
+  const contentSize = Math.round(size * 72 / 108);
+  const pad = Math.floor((size - contentSize) / 2);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  await sharp(src)
+    .trim({ threshold: 100 })
+    .resize(contentSize, contentSize)
+    .extend({
+      top: pad, bottom: size - contentSize - pad,
+      left: pad, right: size - contentSize - pad,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
+    .png()
+    .toFile(dest);
+  console.log(`  ${size}x${size} foreground (safe zone) → ${dest}`);
+}
+
 async function resizeRound(src, dest, size) {
   // Trim whitespace, scale content to 85% and center so edge rings aren't clipped
   const contentSize = Math.round(size * 0.85);
@@ -64,7 +83,7 @@ async function main() {
   for (const { dir, size } of android) {
     await resize(SRC, `${base}/${dir}/ic_launcher.png`, size, { trim: true });
     await resizeRound(SRC, `${base}/${dir}/ic_launcher_round.png`, size);
-    await resize(SRC, `${base}/${dir}/ic_launcher_foreground.png`, foregroundSizes[dir], { trim: true });
+    await resizeForeground(SRC, `${base}/${dir}/ic_launcher_foreground.png`, foregroundSizes[dir]);
   }
 
   // iOS AppIcon
