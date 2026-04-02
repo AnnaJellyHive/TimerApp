@@ -196,15 +196,23 @@ export default function TimerScreen({ route, navigation }: Props) {
           {isBreak ? 'Paus' : `${currentIndex + 1} av ${subtasks.length}`}
         </Text>
 
-        <Animated.View
-          accessible={true}
-          accessibilityLabel="timerAnimation"
-          pointerEvents={isBreak ? 'none' : 'auto'}
-          style={[styles.focusIconContainer, { transform: [{ scale: pulseAnim }], opacity: isBreak ? 0 : 1 }]}>
-          <Text style={styles.focusIconEmoji}>{cfg.emoji}</Text>
-        </Animated.View>
-        <View style={{ opacity: isBreak ? 1 : 0 }} pointerEvents={isBreak ? 'auto' : 'none'}>
-          <BreakAnimation color={cfg.accentLight} />
+        <View style={styles.iconArea}>
+          <Animated.View
+            accessible={true}
+            accessibilityLabel="timerAnimation"
+            pointerEvents={isBreak ? 'none' : 'auto'}
+            style={[styles.focusIconContainer, {
+              position: 'absolute',
+              transform: [{ scale: pulseAnim }],
+              opacity: isBreak ? 0 : 1,
+            }]}>
+            <Text style={styles.focusIconEmoji}>{cfg.emoji}</Text>
+          </Animated.View>
+          <View
+            style={{ position: 'absolute', opacity: isBreak ? 1 : 0 }}
+            pointerEvents={isBreak ? 'auto' : 'none'}>
+            <BreakAnimation color={cfg.accentLight} />
+          </View>
         </View>
 
         <Text testID="timerDisplay" style={styles.timerDisplay}>
@@ -264,11 +272,14 @@ const styles = StyleSheet.create({
   modeLabel: { fontSize: 22, fontWeight: 'bold', marginBottom: 8, color: '#2d3432' },
   taskName: { fontSize: 22, textAlign: 'center', marginBottom: 4, color: '#2d3432' },
   progress: { fontSize: 14, color: '#536350', marginBottom: 40 },
+  iconArea: {
+    width: 160, height: 160, marginBottom: 16,
+    alignItems: 'center', justifyContent: 'center',
+  },
   focusIconContainer: {
     width: 96, height: 96, borderRadius: 48,
     backgroundColor: 'rgba(255,255,255,0.5)',
     alignItems: 'center', justifyContent: 'center',
-    marginBottom: 16,
     shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 12, elevation: 3,
   },
   focusIconEmoji: { fontSize: 48 },
