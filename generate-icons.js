@@ -10,7 +10,7 @@ const SRC = path.join(__dirname, 'assets', 'ic_launcher.png');
 async function resize(src, dest, size, { flatten = false, trim = false } = {}) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   let pipeline = sharp(src);
-  if (trim) pipeline = pipeline.trim();
+  if (trim) pipeline = pipeline.trim({ threshold: 100 });
   pipeline = pipeline.resize(size, size);
   if (flatten) pipeline = pipeline.flatten({ background: '#ffffff' });
   await pipeline.png().toFile(dest);
