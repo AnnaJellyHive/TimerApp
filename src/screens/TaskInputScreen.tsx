@@ -306,7 +306,13 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </Modal>
     </ScrollView>
     </KeyboardAvoidingView>
-    <BottomNavBar activeTab="Uppgifter" onTabPress={tab => { if (tab === 'Historik') navigation.navigate('History'); }} />
+    <BottomNavBar
+      activeTab="Uppgifter"
+      onTabPress={tab => {
+        if (tab === 'Historik') navigation.navigate('History');
+        if (tab === 'Listor') navigation.navigate('Checklists');
+      }}
+    />
     </SafeAreaView>
   );
 }

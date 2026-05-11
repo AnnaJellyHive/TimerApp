@@ -15,6 +15,20 @@ export interface CompletedTask {
   breakDurationSeconds: number;
   category?: string;
   completedAt: number; // timestamp ms
+  checklistItems?: ChecklistItem[];
+}
+
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  checked: boolean;
+}
+
+export interface Checklist {
+  id: string;
+  name: string;
+  createdAt: number;
+  items: ChecklistItem[];
 }
 
 export type RootStackParamList = {
@@ -34,4 +48,6 @@ export type RootStackParamList = {
     category?: string;
   };
   History: undefined;
+  Checklists: undefined;
+  ChecklistDetail: { checklistId: string };
 };

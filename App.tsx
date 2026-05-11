@@ -9,6 +9,8 @@ import TaskInputScreen from './src/screens/TaskInputScreen';
 import TimerScreen from './src/screens/TimerScreen';
 import ContinueScreen from './src/screens/ContinueScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
+import ChecklistsScreen from './src/screens/ChecklistsScreen';
+import ChecklistDetailScreen from './src/screens/ChecklistDetailScreen';
 import { seedDefaultTemplates } from './src/storage/templateStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -65,6 +67,8 @@ export default function App() {
             <Stack.Screen name="Timer" component={TimerScreen} />
             <Stack.Screen name="Continue" component={ContinueScreen} />
             <Stack.Screen name="History" component={HistoryScreen} />
+            <Stack.Screen name="Checklists" component={ChecklistsScreen} />
+            <Stack.Screen name="ChecklistDetail" component={ChecklistDetailScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

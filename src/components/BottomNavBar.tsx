@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export type TabName = 'Uppgifter' | 'Historik';
+export type TabName = 'Uppgifter' | 'Listor' | 'Historik';
 
 interface Props {
   activeTab: TabName;
@@ -13,6 +13,7 @@ interface Props {
 
 const TABS: { name: TabName; icon: string }[] = [
   { name: 'Uppgifter', icon: '✓' },
+  { name: 'Listor', icon: '☰' },
   { name: 'Historik', icon: '↺' },
 ];
 
@@ -36,7 +37,7 @@ export default function BottomNavBar({ activeTab, onTabPress }: Props) {
           return (
             <Animated.View key={tab.name} style={{ transform: [{ scale: scales[i] }] }}>
               <TouchableOpacity
-                accessibilityLabel={tab.name === 'Uppgifter' ? 'uppgifterTab' : 'historikTab'}
+                accessibilityLabel={tab.name === 'Uppgifter' ? 'uppgifterTab' : tab.name === 'Listor' ? 'listorTab' : 'historikTab'}
                 accessibilityRole="tab"
                 onPress={() => onTabPress(tab.name)}
                 onPressIn={() => handlePressIn(i)}
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   tab: {
     flexDirection: 'column',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 9999,
   },

@@ -10,6 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, CompletedTask } from '../types';
 import * as StreakStore from '../storage/streakStore';
+import * as ChecklistStore from '../storage/checklistStore';
 import { getCategoryConfig } from '../utils/categoryConfig';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
@@ -45,6 +46,11 @@ export default function HistoryScreen({ navigation }: Props) {
     navigation.navigate('TaskInput', { prefill: task });
   }
 
+  async function reuseChecklist(item: CompletedTask) {
+    const created = await ChecklistStore.save(item.taskName, item.checklistItems);
+    navigation.navigate('ChecklistDetail', { checklistId: created.id });
+  }
+
   function formatDate(ts: number): string {
     return new Date(ts).toLocaleDateString('sv-SE', {
       weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -60,7 +66,7 @@ export default function HistoryScreen({ navigation }: Props) {
           <ActivityIndicator size="large" color="#1d6d2b" style={{ marginTop: 48 }} />
         ) : tasks.length === 0 ? (
           <Text testID="emptyHistoryText" style={styles.empty}>
-            Inga avklarade uppgifter de senaste 3 dagarna
+            Du har inga avklarade uppgifter eller listor de senaste 3 dagarna.
           </Text>
         ) : (
           <FlatList
@@ -74,34 +80,52 @@ export default function HistoryScreen({ navigation }: Props) {
                 deleteAccessibilityLabel="historyDeleteYes"
                 onDelete={() => deleteTask(item)}
                 containerStyle={{ marginBottom: 10 }}>
-                <TouchableOpacity onPress={() => reuseTask(item)}>
-                  {(() => {
-                    const catCfg = getCategoryConfig(item.category);
-                    return (
-                      <View testID={`historyItem_${item.id}`} style={[styles.card, { borderLeftColor: catCfg.accent, borderLeftWidth: 4 }]}>
-                        <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
-                          {item.taskName}
-                        </Text>
-                        <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
-                        <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
-                        {item.category && (
-                          <View style={[styles.categoryChip, { backgroundColor: catCfg.accentLight }]}>
-                            <Text style={[styles.categoryChipText, { color: catCfg.accent }]}>
-                              {catCfg.emoji} {item.category}
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                    );
-                  })()}
-                </TouchableOpacity>
+                {item.checklistItems ? (
+                  <TouchableOpacity onPress={() => reuseChecklist(item)}>
+                    <View testID={`historyItem_${item.id}`} style={[styles.card, { borderLeftColor: '#1d6d2b', borderLeftWidth: 4 }]}>
+                      <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
+                        ☰ {item.taskName}
+                      </Text>
+                      <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
+                      <Text style={styles.cardSub}>{item.checklistItems.length} punkter avklarade</Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => reuseTask(item)}>
+                    {(() => {
+                      const catCfg = getCategoryConfig(item.category);
+                      return (
+                        <View testID={`historyItem_${item.id}`} style={[styles.card, { borderLeftColor: catCfg.accent, borderLeftWidth: 4 }]}>
+                          <Text testID="taskItemTitle" accessible={true} accessibilityLabel={Platform.OS === 'android' ? 'taskItemTitle' : undefined} style={styles.cardTitle}>
+                            ✓ {item.taskName}
+                          </Text>
+                          <Text testID="taskItemTime" style={styles.cardSub}>{formatDate(item.completedAt)}</Text>
+                          <Text style={styles.cardSub}>{item.subtasks.length} underuppgifter</Text>
+                          {item.category && (
+                            <View style={[styles.categoryChip, { backgroundColor: catCfg.accentLight }]}>
+                              <Text style={[styles.categoryChipText, { color: catCfg.accent }]}>
+                                {catCfg.emoji} {item.category}
+                              </Text>
+                            </View>
+                          )}
+                        </View>
+                      );
+                    })()}
+                  </TouchableOpacity>
+                )}
               </SwipeableRow>
             )}
           />
         )}
       </View>
 
-      <BottomNavBar activeTab="Historik" onTabPress={tab => { if (tab === 'Uppgifter') navigation.navigate('TaskInput'); }} />
+      <BottomNavBar
+        activeTab="Historik"
+        onTabPress={tab => {
+          if (tab === 'Uppgifter') navigation.navigate('TaskInput');
+          if (tab === 'Listor') navigation.navigate('Checklists');
+        }}
+      />
     </SafeAreaView>
   );
 }
