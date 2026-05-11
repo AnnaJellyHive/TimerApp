@@ -6,7 +6,7 @@ import {
 import BottomNavBar from '../components/BottomNavBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeableRow from '../components/SwipeableRow';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, CompletedTask } from '../types';
 import * as StreakStore from '../storage/streakStore';
@@ -48,7 +48,15 @@ export default function HistoryScreen({ navigation }: Props) {
 
   async function reuseChecklist(item: CompletedTask) {
     const created = await ChecklistStore.save(item.taskName, item.checklistItems);
-    navigation.navigate('ChecklistDetail', { checklistId: created.id });
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          { name: 'Checklists' },
+          { name: 'ChecklistDetail', params: { checklistId: created.id } },
+        ],
+      })
+    );
   }
 
   function formatDate(ts: number): string {

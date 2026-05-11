@@ -36,6 +36,25 @@ async function resizeForeground(src, dest, size) {
   console.log(`  ${size}x${size} foreground (safe zone) → ${dest}`);
 }
 
+async function resizeIOS(src, dest, size) {
+  // Scale content to 85% so Apple's squircle rounding doesn't clip the outer ring
+  const contentSize = Math.round(size * 0.85);
+  const pad = Math.floor((size - contentSize) / 2);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  await sharp(src)
+    .trim({ threshold: 100 })
+    .resize(contentSize, contentSize)
+    .extend({
+      top: pad, bottom: size - contentSize - pad,
+      left: pad, right: size - contentSize - pad,
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
+    })
+    .flatten({ background: '#ffffff' })
+    .png()
+    .toFile(dest);
+  console.log(`  ${size}x${size} iOS → ${dest}`);
+}
+
 async function resizeRound(src, dest, size) {
   // Trim whitespace, scale content to 85% and center so edge rings aren't clipped
   const contentSize = Math.round(size * 0.85);
@@ -108,14 +127,14 @@ async function main() {
   const iosBase = 'ios/TimerApp/Images.xcassets/AppIcon.appiconset';
   console.log('\niOS AppIcon...');
   for (const { name, size } of iosIcons) {
-    await resize(SRC, `${iosBase}/${name}`, size, { flatten: true });
+    await resizeIOS(SRC, `${iosBase}/${name}`, size);
   }
 
   // iOS SplashIcon
   const splashBase = 'ios/TimerApp/Images.xcassets/SplashIcon.imageset';
   console.log('\niOS SplashIcon...');
-  await resize(SRC, `${splashBase}/Icon-60@2x.png`, 120, { flatten: true });
-  await resize(SRC, `${splashBase}/Icon-60@3x.png`, 180, { flatten: true });
+  await resizeIOS(SRC, `${splashBase}/Icon-60@2x.png`, 120);
+  await resizeIOS(SRC, `${splashBase}/Icon-60@3x.png`, 180);
 
   console.log('\nKlart!');
 }
