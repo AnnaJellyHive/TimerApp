@@ -14,7 +14,6 @@ import { getCategoryConfig } from '../utils/categoryConfig';
 type Props = NativeStackScreenProps<RootStackParamList, 'TaskInput'>;
 
 const MAX_LENGTH = 50;
-const DEFAULT_DURATION = 120;
 const CATEGORIES = ['Övrigt', 'Plugg', 'Träning', 'Hem', 'Socialt', 'Mental hälsa'];
 const CATEGORY_ICONS: Record<string, string> = {
   'Övrigt': '🔘',
@@ -25,21 +24,69 @@ const CATEGORY_ICONS: Record<string, string> = {
   'Mental hälsa': '🧘',
 };
 
+const FOCUS_PRESETS = [
+  { label: '1 min', seconds: 60 },
+  { label: '2 min', seconds: 120 },
+  { label: '5 min', seconds: 300 },
+];
+const FOCUS_PRESET_SECS = FOCUS_PRESETS.map(p => p.seconds);
+
+const BREAK_PRESETS = [
+  { label: 'Ingen', seconds: 0 },
+  { label: '30 s', seconds: 30 },
+  { label: '1 min', seconds: 60 },
+];
+const BREAK_PRESET_SECS = BREAK_PRESETS.map(p => p.seconds);
+
+type TimeUnit = 'sek' | 'min';
+type PresetOrCustom = number | 'custom';
+
+function presetsFromSeconds(
+  seconds: number,
+  presetValues: number[],
+): { preset: PresetOrCustom; customValue: string; customUnit: TimeUnit } {
+  if (presetValues.includes(seconds)) {
+    return { preset: seconds, customValue: '', customUnit: 'min' };
+  }
+  if (seconds < 60 || seconds % 60 !== 0) {
+    return { preset: 'custom', customValue: String(seconds), customUnit: 'sek' };
+  }
+  return { preset: 'custom', customValue: String(seconds / 60), customUnit: 'min' };
+}
+
 export default function TaskInputScreen({ route, navigation }: Props) {
   const prefill = route.params?.prefill;
+
+  const initFocus = presetsFromSeconds(prefill?.durationSeconds ?? 60, FOCUS_PRESET_SECS);
+  const initBreak = presetsFromSeconds(prefill?.breakDurationSeconds ?? 30, BREAK_PRESET_SECS);
 
   const [taskName, setTaskName] = useState(prefill?.taskName ?? '');
   const [subtaskInput, setSubtaskInput] = useState('');
   const [subtasks, setSubtasks] = useState<string[]>(prefill?.subtasks ?? []);
-  const [duration, setDuration] = useState(String(prefill?.durationSeconds ?? DEFAULT_DURATION));
-  const [breakDuration, setBreakDuration] = useState(String(prefill?.breakDurationSeconds ?? DEFAULT_DURATION));
+  const [focusPreset, setFocusPreset] = useState<PresetOrCustom>(initFocus.preset);
+  const [focusCustomValue, setFocusCustomValue] = useState(initFocus.customValue);
+  const [focusCustomUnit, setFocusCustomUnit] = useState<TimeUnit>(initFocus.customUnit);
+  const [breakPreset, setBreakPreset] = useState<PresetOrCustom>(initBreak.preset);
+  const [breakCustomValue, setBreakCustomValue] = useState(initBreak.customValue);
+  const [breakCustomUnit, setBreakCustomUnit] = useState<TimeUnit>(initBreak.customUnit);
   const [category, setCategory] = useState(prefill?.category ?? 'Övrigt');
   const [showCategory, setShowCategory] = useState(false);
   const [templates, setTemplates] = useState<TaskTemplate[]>([]);
   const [showTemplates, setShowTemplates] = useState(false);
 
-  const hasContent = taskName.length > 0 || subtasks.length > 0
-    || duration !== String(DEFAULT_DURATION) || breakDuration !== String(DEFAULT_DURATION);
+  const hasContent = taskName.length > 0 || subtasks.length > 0;
+
+  function getDurationSeconds(): number {
+    if (focusPreset !== 'custom') return focusPreset;
+    const val = parseInt(focusCustomValue) || 1;
+    return focusCustomUnit === 'min' ? val * 60 : val;
+  }
+
+  function getBreakDurationSeconds(): number {
+    if (breakPreset !== 'custom') return breakPreset;
+    const val = parseInt(breakCustomValue) || 0;
+    return breakCustomUnit === 'min' ? val * 60 : val;
+  }
 
   function addSubtask() {
     const text = subtaskInput.trim();
@@ -56,8 +103,12 @@ export default function TaskInputScreen({ route, navigation }: Props) {
     setTaskName('');
     setSubtasks([]);
     setSubtaskInput('');
-    setDuration(String(DEFAULT_DURATION));
-    setBreakDuration(String(DEFAULT_DURATION));
+    setFocusPreset(60);
+    setFocusCustomValue('');
+    setFocusCustomUnit('min');
+    setBreakPreset(30);
+    setBreakCustomValue('');
+    setBreakCustomUnit('min');
     setCategory('Övrigt');
   }
 
@@ -67,8 +118,8 @@ export default function TaskInputScreen({ route, navigation }: Props) {
     navigation.navigate('Timer', {
       taskName: taskName.trim().slice(0, MAX_LENGTH),
       subtasks: subtasks.map(s => s.slice(0, MAX_LENGTH)),
-      durationSeconds: Math.max(1, parseInt(duration) || DEFAULT_DURATION),
-      breakDurationSeconds: Math.max(1, parseInt(breakDuration) || DEFAULT_DURATION),
+      durationSeconds: Math.max(1, getDurationSeconds()),
+      breakDurationSeconds: Math.max(0, getBreakDurationSeconds()),
       category,
     });
   }
@@ -84,8 +135,8 @@ export default function TaskInputScreen({ route, navigation }: Props) {
     await TemplateStore.save({
       taskName: taskName.trim().slice(0, MAX_LENGTH),
       subtasks: subtasks.map(s => s.slice(0, MAX_LENGTH)),
-      durationSeconds: Math.max(1, parseInt(duration) || DEFAULT_DURATION),
-      breakDurationSeconds: Math.max(1, parseInt(breakDuration) || DEFAULT_DURATION),
+      durationSeconds: Math.max(1, getDurationSeconds()),
+      breakDurationSeconds: Math.max(0, getBreakDurationSeconds()),
       category,
     });
     Alert.alert('Uppgift sparad!');
@@ -98,13 +149,20 @@ export default function TaskInputScreen({ route, navigation }: Props) {
     setShowTemplates(true);
   }
 
-  function applyTemplate(t: TaskTemplate) {
+  function applyTemplate(t: TaskTemplate, closeModal = false) {
     setTaskName(t.taskName);
     setSubtasks(t.subtasks);
-    setDuration(String(t.durationSeconds));
-    setBreakDuration(String(t.breakDurationSeconds));
+    const fp = presetsFromSeconds(t.durationSeconds, FOCUS_PRESET_SECS);
+    setFocusPreset(fp.preset);
+    setFocusCustomValue(fp.customValue);
+    setFocusCustomUnit(fp.customUnit);
+    const bp = presetsFromSeconds(t.breakDurationSeconds, BREAK_PRESET_SECS);
+    setBreakPreset(bp.preset);
+    setBreakCustomValue(bp.customValue);
+    setBreakCustomUnit(bp.customUnit);
     setCategory(t.category ?? 'Övrigt');
-    setShowTemplates(false);
+    if (closeModal) setShowTemplates(false);
+    TemplateStore.updateLastUsed(t.id).catch(() => {});
   }
 
   async function deleteTemplate(id: string) {
@@ -118,6 +176,64 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         },
       },
     ]);
+  }
+
+  function renderTimePresets(
+    label: string,
+    presets: { label: string; seconds: number }[],
+    selected: PresetOrCustom,
+    onSelect: (s: PresetOrCustom) => void,
+    customValue: string,
+    setCustomValue: (v: string) => void,
+    customUnit: TimeUnit,
+    setCustomUnit: (u: TimeUnit) => void,
+  ) {
+    return (
+      <>
+        <Text style={styles.label}>{label}</Text>
+        <View style={styles.presetRow}>
+          {presets.map(p => (
+            <TouchableOpacity
+              key={p.seconds}
+              style={[styles.presetChip, selected === p.seconds && styles.presetChipActive]}
+              onPress={() => onSelect(p.seconds)}>
+              <Text style={[styles.presetChipText, selected === p.seconds && styles.presetChipTextActive]}>
+                {p.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            style={[styles.presetChip, selected === 'custom' && styles.presetChipActive]}
+            onPress={() => onSelect('custom')}>
+            <Text style={[styles.presetChipText, selected === 'custom' && styles.presetChipTextActive]}>
+              Anpassa
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {selected === 'custom' && (
+          <View style={styles.customRow}>
+            <TextInput
+              style={styles.customInput}
+              keyboardType="number-pad"
+              value={customValue}
+              onChangeText={setCustomValue}
+              placeholder="0"
+              maxLength={4}
+            />
+            <TouchableOpacity
+              style={[styles.unitChip, customUnit === 'sek' && styles.unitChipActive]}
+              onPress={() => setCustomUnit('sek')}>
+              <Text style={[styles.unitChipText, customUnit === 'sek' && styles.unitChipTextActive]}>sek</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.unitChip, customUnit === 'min' && styles.unitChipActive]}
+              onPress={() => setCustomUnit('min')}>
+              <Text style={[styles.unitChipText, customUnit === 'min' && styles.unitChipTextActive]}>min</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </>
+    );
   }
 
   return (
@@ -196,28 +312,18 @@ export default function TaskInputScreen({ route, navigation }: Props) {
       </TouchableOpacity>
 
       {/* Tider */}
-      <View style={styles.timerRow}>
-        <View style={styles.timerField}>
-          <Text style={styles.label}>Fokustid (sek)</Text>
-          <TextInput
-            accessibilityLabel="durationInput"
-            style={styles.input}
-            keyboardType="default"
-            value={duration}
-            onChangeText={setDuration}
-          />
-        </View>
-        <View style={styles.timerField}>
-          <Text style={styles.label}>Paus-tid (sek)</Text>
-          <TextInput
-            accessibilityLabel="breakDurationInput"
-            style={styles.input}
-            keyboardType="default"
-            value={breakDuration}
-            onChangeText={setBreakDuration}
-          />
-        </View>
-      </View>
+      {renderTimePresets(
+        'Fokustid',
+        FOCUS_PRESETS, focusPreset, setFocusPreset,
+        focusCustomValue, setFocusCustomValue,
+        focusCustomUnit, setFocusCustomUnit,
+      )}
+      {renderTimePresets(
+        'Paus-tid',
+        BREAK_PRESETS, breakPreset, setBreakPreset,
+        breakCustomValue, setBreakCustomValue,
+        breakCustomUnit, setBreakCustomUnit,
+      )}
 
       {/* Knappar */}
       <TouchableOpacity accessibilityLabel="startButton" onPress={startTimer} style={styles.primaryBtn}>
@@ -282,7 +388,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
                     deleteAccessibilityLabel="templateDeleteYes"
                     onDelete={() => deleteTemplate(item.id)}>
                     <View style={styles.templateRow}>
-                      <TouchableOpacity style={{ flex: 1 }} onPress={() => applyTemplate(item)}>
+                      <TouchableOpacity style={{ flex: 1 }} onPress={() => applyTemplate(item, true)}>
                         <Text testID="templateItemName" style={styles.templateName}>{item.taskName}</Text>
                         <View style={[styles.templateCategoryChip, { backgroundColor: catCfg.accentLight }]}>
                           <Text style={[styles.templateCategoryChipText, { color: catCfg.accent }]}>
@@ -322,7 +428,7 @@ const styles = StyleSheet.create({
   appTitleIcon: { width: 32, height: 32, marginRight: 8 },
   appTitle: { fontSize: 26, fontWeight: 'bold', color: '#1d6d2b' },
   container: { padding: 24, paddingBottom: 48 },
-  label: { fontSize: 14, fontWeight: '600', marginTop: 16, marginBottom: 4, color: '#2d3432' },
+  label: { fontSize: 14, fontWeight: '600', marginTop: 16, marginBottom: 6, color: '#2d3432' },
   input: {
     borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.15)', borderRadius: 8,
     padding: 10, fontSize: 16, marginBottom: 8, backgroundColor: '#f0f4f0', color: '#2d3432',
@@ -349,8 +455,6 @@ const styles = StyleSheet.create({
     padding: 10, alignItems: 'center', marginTop: 8, flex: 1,
   },
   secondaryBtnText: { color: '#1d6d2b', fontSize: 14 },
-  timerRow: { flexDirection: 'row', gap: 12 },
-  timerField: { flex: 1 },
   clearBtn: { alignItems: 'center', marginTop: 16 },
   clearBtnText: { color: '#536350', fontSize: 14 },
   modalOverlay: {
@@ -389,14 +493,51 @@ const styles = StyleSheet.create({
   },
   categoryBtnText: { fontSize: 16, color: '#2d3432' },
   categoryChevron: { fontSize: 16, color: '#536350' },
-  templateDeleteAction: {
-    backgroundColor: '#e53935', justifyContent: 'center',
-    alignItems: 'center', width: 80,
-  },
-  templateDeleteText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
   templateCategoryChip: {
     alignSelf: 'flex-start', borderRadius: 9999,
     paddingHorizontal: 8, paddingVertical: 2, marginTop: 4,
   },
   templateCategoryChipText: { fontSize: 11, fontWeight: '600' },
+  presetRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 4 },
+  presetChip: {
+    borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.25)',
+    borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8,
+    backgroundColor: '#f0f4f0',
+  },
+  presetChipActive: { backgroundColor: '#1d6d2b', borderColor: '#1d6d2b' },
+  presetChipText: { fontSize: 14, color: '#2d3432' },
+  presetChipTextActive: { color: '#fff', fontWeight: '600' },
+  customRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  customInput: {
+    borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.15)', borderRadius: 8,
+    paddingVertical: 8, paddingHorizontal: 12, fontSize: 16,
+    backgroundColor: '#f0f4f0', color: '#2d3432',
+    width: 80, textAlign: 'center',
+  },
+  unitChip: {
+    borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.25)',
+    borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8,
+    backgroundColor: '#f0f4f0',
+  },
+  unitChipActive: { backgroundColor: '#1d6d2b', borderColor: '#1d6d2b' },
+  unitChipText: { fontSize: 14, color: '#2d3432' },
+  unitChipTextActive: { color: '#fff', fontWeight: '600' },
+  recentSection: {
+    backgroundColor: '#fff', borderRadius: 12,
+    borderWidth: 1, borderColor: 'rgba(83, 99, 80, 0.12)',
+    paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4,
+    marginBottom: 8,
+  },
+  recentLabel: {
+    fontSize: 11, fontWeight: '600', color: '#536350',
+    marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1,
+  },
+  recentRow: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingVertical: 10,
+    borderTopWidth: 1, borderTopColor: 'rgba(83,99,80,0.08)',
+  },
+  recentEmoji: { fontSize: 18, marginRight: 10 },
+  recentName: { flex: 1, fontSize: 15, color: '#2d3432' },
+  recentChevron: { fontSize: 22, color: '#b0b8b0', marginLeft: 4 },
 });

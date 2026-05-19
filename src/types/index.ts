@@ -5,6 +5,7 @@ export interface TaskTemplate {
   durationSeconds: number;
   breakDurationSeconds: number;
   category?: string;
+  lastUsedAt?: number;
 }
 
 export interface CompletedTask {
