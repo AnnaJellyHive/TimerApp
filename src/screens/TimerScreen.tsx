@@ -133,12 +133,6 @@ export default function TimerScreen({ route, navigation }: Props) {
       <View style={styles.decorativeFrame} pointerEvents="none" />
 
       <View style={styles.content}>
-        {/* Kategori-etikett */}
-        <View style={styles.categoryHeader}>
-          <Text style={styles.categoryHeaderSmall}>KATEGORI</Text>
-          <Text style={styles.categoryHeaderName}>{category ?? 'Övrigt'}</Text>
-        </View>
-
         <Text
           testID="timerModeLabel"
           accessible={true}
@@ -163,6 +157,12 @@ export default function TimerScreen({ route, navigation }: Props) {
           style={styles.progress}>
           {isBreak ? 'Paus' : `${currentIndex + 1} av ${subtasks.length}`}
         </Text>
+
+        {/* Kategori-etikett */}
+        <View style={styles.categoryHeader}>
+          <Text style={styles.categoryHeaderSmall}>KATEGORI</Text>
+          <Text style={styles.categoryHeaderName}>{category ?? 'Övrigt'}</Text>
+        </View>
 
         {/* Progress-ring */}
         <View accessibilityLabel="timerAnimation">
