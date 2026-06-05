@@ -68,7 +68,10 @@ export default function ContinueScreen({ route, navigation }: Props) {
       {/* Fokus-badge */}
       <View style={styles.focusBadge}>
         <Text style={styles.focusBadgeLabel}>⏱ FOKUS</Text>
-        <Text style={styles.focusBadgeTime}>{timeLabel}</Text>
+        <Text
+          testID="continueTimeLabel"
+          accessibilityLabel={Platform.OS === 'android' ? 'continueTimeLabel' : undefined}
+          style={styles.focusBadgeTime}>{timeLabel}</Text>
       </View>
 
       {/* Progress-dots */}

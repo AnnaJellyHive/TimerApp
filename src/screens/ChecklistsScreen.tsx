@@ -67,10 +67,11 @@ export default function ChecklistsScreen({ navigation }: Props) {
           <ActivityIndicator size="large" color="#1d6d2b" style={{ marginTop: 48 }} />
         ) : checklists.length === 0 ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={styles.empty}>Du har inga aktiva listor.</Text>
+            <Text testID="emptyChecklistsText" style={styles.empty}>Du har inga aktiva listor.</Text>
           </View>
         ) : (
           <FlatList
+            accessibilityLabel="checklistsList"
             style={styles.list}
             contentContainerStyle={{ paddingBottom: 16 }}
             data={[...checklists].reverse()}
@@ -80,10 +81,18 @@ export default function ChecklistsScreen({ navigation }: Props) {
                 onDelete={() => deleteList(item)}
                 deleteAccessibilityLabel="checklistDeleteYes"
                 containerStyle={{ marginBottom: 10 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('ChecklistDetail', { checklistId: item.id })}>
+                <TouchableOpacity
+                  accessibilityLabel={`checklistItem_${item.id}`}
+                  onPress={() => navigation.navigate('ChecklistDetail', { checklistId: item.id })}>
                   <View style={styles.card}>
-                    <Text style={styles.cardTitle}>{item.name}</Text>
-                    <Text style={styles.cardSub}>{progressText(item)}</Text>
+                    <Text
+                      testID="checklistItemTitle"
+                      accessibilityLabel={Platform.OS === 'android' ? 'checklistItemTitle' : undefined}
+                      style={styles.cardTitle}>{item.name}</Text>
+                    <Text
+                      testID="checklistItemProgress"
+                      accessibilityLabel={Platform.OS === 'android' ? 'checklistItemProgress' : undefined}
+                      style={styles.cardSub}>{progressText(item)}</Text>
                   </View>
                 </TouchableOpacity>
               </SwipeableRow>
@@ -92,7 +101,10 @@ export default function ChecklistsScreen({ navigation }: Props) {
         )}
 
         <View style={styles.createBtnWrapper}>
-          <TouchableOpacity style={styles.primaryBtn} onPress={() => setShowCreate(true)}>
+          <TouchableOpacity
+            accessibilityLabel="createListButton"
+            style={styles.primaryBtn}
+            onPress={() => setShowCreate(true)}>
             <Text style={styles.primaryBtnText}>Ny lista</Text>
           </TouchableOpacity>
         </View>
@@ -111,6 +123,7 @@ export default function ChecklistsScreen({ navigation }: Props) {
           <View style={styles.modalBox}>
             <Text style={styles.modalTitle}>Ny lista</Text>
             <TextInput
+              accessibilityLabel="checklistNameInput"
               style={styles.input}
               placeholder="Namn på listan"
               value={newListName}
@@ -122,11 +135,13 @@ export default function ChecklistsScreen({ navigation }: Props) {
               returnKeyType="done"
             />
             <TouchableOpacity
+              accessibilityLabel="createListConfirmButton"
               style={[styles.primaryBtn, { marginTop: 8 }]}
               onPress={createList}>
               <Text style={styles.primaryBtnText}>Skapa</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              accessibilityLabel="cancelCreateListButton"
               style={styles.cancelBtn}
               onPress={() => { setShowCreate(false); setNewListName(''); }}>
               <Text style={styles.cancelBtnText}>Avbryt</Text>

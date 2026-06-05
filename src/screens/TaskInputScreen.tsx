@@ -180,6 +180,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
 
   function renderTimePresets(
     label: string,
+    idPrefix: string,
     presets: { label: string; seconds: number }[],
     selected: PresetOrCustom,
     onSelect: (s: PresetOrCustom) => void,
@@ -187,6 +188,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
     setCustomValue: (v: string) => void,
     customUnit: TimeUnit,
     setCustomUnit: (u: TimeUnit) => void,
+    currentSeconds: number,
   ) {
     return (
       <>
@@ -195,6 +197,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
           {presets.map(p => (
             <TouchableOpacity
               key={p.seconds}
+              accessibilityLabel={`${idPrefix}Preset_${p.seconds}`}
               style={[styles.presetChip, selected === p.seconds && styles.presetChipActive]}
               onPress={() => onSelect(p.seconds)}>
               <Text style={[styles.presetChipText, selected === p.seconds && styles.presetChipTextActive]}>
@@ -203,6 +206,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
             </TouchableOpacity>
           ))}
           <TouchableOpacity
+            accessibilityLabel={`${idPrefix}CustomChip`}
             style={[styles.presetChip, selected === 'custom' && styles.presetChipActive]}
             onPress={() => onSelect('custom')}>
             <Text style={[styles.presetChipText, selected === 'custom' && styles.presetChipTextActive]}>
@@ -213,6 +217,7 @@ export default function TaskInputScreen({ route, navigation }: Props) {
         {selected === 'custom' && (
           <View style={styles.customRow}>
             <TextInput
+              accessibilityLabel={`${idPrefix}CustomInput`}
               style={styles.customInput}
               keyboardType="number-pad"
               value={customValue}
@@ -221,17 +226,25 @@ export default function TaskInputScreen({ route, navigation }: Props) {
               maxLength={4}
             />
             <TouchableOpacity
+              accessibilityLabel={`${idPrefix}CustomSekButton`}
               style={[styles.unitChip, customUnit === 'sek' && styles.unitChipActive]}
               onPress={() => setCustomUnit('sek')}>
               <Text style={[styles.unitChipText, customUnit === 'sek' && styles.unitChipTextActive]}>sek</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              accessibilityLabel={`${idPrefix}CustomMinButton`}
               style={[styles.unitChip, customUnit === 'min' && styles.unitChipActive]}
               onPress={() => setCustomUnit('min')}>
               <Text style={[styles.unitChipText, customUnit === 'min' && styles.unitChipTextActive]}>min</Text>
             </TouchableOpacity>
           </View>
         )}
+        <Text
+          testID={`${idPrefix}DurationValue`}
+          accessibilityLabel={Platform.OS === 'android' ? `${idPrefix}DurationValue` : undefined}
+          style={{ color: 'transparent', height: 1 }}>
+          {String(currentSeconds)}
+        </Text>
       </>
     );
   }
@@ -313,16 +326,18 @@ export default function TaskInputScreen({ route, navigation }: Props) {
 
       {/* Tider */}
       {renderTimePresets(
-        'Fokustid',
+        'Fokustid', 'focus',
         FOCUS_PRESETS, focusPreset, setFocusPreset,
         focusCustomValue, setFocusCustomValue,
         focusCustomUnit, setFocusCustomUnit,
+        getDurationSeconds(),
       )}
       {renderTimePresets(
-        'Paus-tid',
+        'Paus-tid', 'break',
         BREAK_PRESETS, breakPreset, setBreakPreset,
         breakCustomValue, setBreakCustomValue,
         breakCustomUnit, setBreakCustomUnit,
+        getBreakDurationSeconds(),
       )}
 
       {/* Knappar */}

@@ -165,7 +165,7 @@ export default function TimerScreen({ route, navigation }: Props) {
         </View>
 
         {/* Progress-ring */}
-        <View accessibilityLabel="timerAnimation">
+        <View accessible={true} accessibilityLabel="timerAnimation">
           <ProgressRing
             progress={progress}
             color={cfg.accent}

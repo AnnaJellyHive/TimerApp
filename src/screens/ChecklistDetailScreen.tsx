@@ -96,12 +96,16 @@ export default function ChecklistDetailScreen({ route, navigation }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          accessibilityLabel="checklistBackButton"
+          style={styles.backBtn}
+          onPress={() => navigation.goBack()}>
           <Text style={styles.backBtnText}>‹ Tillbaka</Text>
         </TouchableOpacity>
 
         {editingTitle ? (
           <TextInput
+            accessibilityLabel="checklistTitleInput"
             style={styles.titleInput}
             value={titleInput}
             onChangeText={setTitleInput}
@@ -113,7 +117,10 @@ export default function ChecklistDetailScreen({ route, navigation }: Props) {
           />
         ) : (
           <TouchableOpacity onPress={() => setEditingTitle(true)}>
-            <Text style={styles.title}>{checklist.name}</Text>
+            <Text
+              testID="checklistDetailTitle"
+              accessibilityLabel={Platform.OS === 'android' ? 'checklistDetailTitle' : undefined}
+              style={styles.title}>{checklist.name}</Text>
           </TouchableOpacity>
         )}
 
@@ -124,7 +131,7 @@ export default function ChecklistDetailScreen({ route, navigation }: Props) {
           keyExtractor={i => i.id}
           extraData={checklist}
           ListEmptyComponent={
-            <Text style={styles.empty}>Inga punkter än — lägg till nedan</Text>
+            <Text testID="emptyChecklistDetail" style={styles.empty}>Inga punkter än — lägg till nedan</Text>
           }
           renderItem={({ item, index }) => (
             <SwipeableRow
@@ -133,11 +140,15 @@ export default function ChecklistDetailScreen({ route, navigation }: Props) {
               containerStyle={{ marginBottom: 8 }}>
               <View style={styles.itemRow}>
                 <TouchableOpacity
+                  accessibilityLabel="checklistItemCheckbox"
                   style={[styles.checkbox, item.checked && styles.checkboxChecked]}
                   onPress={() => toggleItem(item.id)}>
                   {item.checked && <Text style={styles.checkmark}>✓</Text>}
                 </TouchableOpacity>
-                <Text style={[styles.itemText, item.checked && styles.itemTextChecked]}>
+                <Text
+                  testID="checklistItemText"
+                  accessibilityLabel={Platform.OS === 'android' ? 'checklistItemText' : undefined}
+                  style={[styles.itemText, item.checked && styles.itemTextChecked]}>
                   {item.text}
                 </Text>
                 <View style={styles.moveButtons}>
@@ -161,6 +172,7 @@ export default function ChecklistDetailScreen({ route, navigation }: Props) {
 
         <View style={styles.addRow}>
           <TextInput
+            accessibilityLabel="addChecklistItemInput"
             style={styles.addInput}
             placeholder="Lägg till punkt"
             value={newItemText}
@@ -170,7 +182,10 @@ export default function ChecklistDetailScreen({ route, navigation }: Props) {
             maxLength={100}
             autoCorrect={false}
           />
-          <TouchableOpacity style={styles.addBtn} onPress={addItem}>
+          <TouchableOpacity
+            accessibilityLabel="addChecklistItemButton"
+            style={styles.addBtn}
+            onPress={addItem}>
             <Text style={styles.addBtnText}>+</Text>
           </TouchableOpacity>
         </View>
