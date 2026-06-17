@@ -116,11 +116,11 @@ export default function ChecklistDetailScreen({ route, navigation }: Props) {
             autoCorrect={false}
           />
         ) : (
-          <TouchableOpacity onPress={() => setEditingTitle(true)}>
-            <Text
-              testID="checklistDetailTitle"
-              accessibilityLabel={Platform.OS === 'android' ? 'checklistDetailTitle' : undefined}
-              style={styles.title}>{checklist.name}</Text>
+          <TouchableOpacity
+            testID="checklistDetailTitle"
+            accessibilityLabel={Platform.OS === 'android' ? 'checklistDetailTitle' : undefined}
+            onPress={() => setEditingTitle(true)}>
+            <Text style={styles.title}>{checklist.name}</Text>
           </TouchableOpacity>
         )}
 

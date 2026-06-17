@@ -82,11 +82,10 @@ export default function ChecklistsScreen({ navigation }: Props) {
                 deleteAccessibilityLabel="checklistDeleteYes"
                 containerStyle={{ marginBottom: 10 }}>
                 <TouchableOpacity
-                  accessibilityLabel={`checklistItem_${item.id}`}
+                  testID="checklistItemTitle"
                   onPress={() => navigation.navigate('ChecklistDetail', { checklistId: item.id })}>
                   <View style={styles.card}>
                     <Text
-                      testID="checklistItemTitle"
                       accessibilityLabel={Platform.OS === 'android' ? 'checklistItemTitle' : undefined}
                       style={styles.cardTitle}>{item.name}</Text>
                     <Text
