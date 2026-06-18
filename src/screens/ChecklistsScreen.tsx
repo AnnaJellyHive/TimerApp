@@ -83,6 +83,7 @@ export default function ChecklistsScreen({ navigation }: Props) {
                 containerStyle={{ marginBottom: 10 }}>
                 <TouchableOpacity
                   testID="checklistItemTitle"
+                  accessibilityLabel={item.name}
                   onPress={() => navigation.navigate('ChecklistDetail', { checklistId: item.id })}>
                   <View style={styles.card}>
                     <Text
